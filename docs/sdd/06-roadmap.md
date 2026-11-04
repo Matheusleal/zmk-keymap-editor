@@ -55,3 +55,4 @@ flowchart LR
   - Exportação de diagrama SVG do layout estilo Keymap Drawer.
   - Prova de conceito de comunicação WebHID com ZMK Studio.
 - **Critério de Saída**: Usuário autenticado faz commit e baixa o `.uf2` gerado sem sair da aplicação.
+

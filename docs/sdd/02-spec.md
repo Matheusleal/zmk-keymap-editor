@@ -79,3 +79,4 @@ Result:      Ciclo completo de ponta a ponta desde a edição até a gravação 
    - Usuário acessa "Conditional Layers".
    - Define: "Quando Camada 1 (Lower) e Camada 2 (Raise) estiverem ativas, ativar Camada 3 (Adjust)".
    - Ao compilar, o nó `conditional_layers` é gerado automaticamente no Devicetree.
+

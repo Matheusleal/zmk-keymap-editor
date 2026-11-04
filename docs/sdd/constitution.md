@@ -34,3 +34,4 @@ Princípios inegociáveis. Toda especificação, decisão arquitetural, tarefa e
 - Documentação e Especificação: Flash / Flash Lite (SDD Specs, Memory, Tasks).
 - Codificação e Testes Unitários: Pro.
 - Arquitetura, AST Devicetree e Orquestração: Pro.
+

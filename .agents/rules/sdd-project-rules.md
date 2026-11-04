@@ -5,3 +5,4 @@
 3. **Branch e PR**: Todo o trabalho permanece em branches locais (`feature/planejamento-melhorias-zmk`). Não crie Pull Requests sem autorização expressa.
 4. **AST e Fidelidade**: Qualquer refatoração do motor de Devicetree deve preservar nós desconhecidos, comentários e diretivas pré-processadas.
 5. **Memória de Sessão**: Mantenha `docs/sdd/11-project-memory.md` sempre sincronizado a cada transição de estado.
+

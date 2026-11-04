@@ -46,3 +46,4 @@ Usuários de teclados mecânicos ergonômicos (especialmente layouts reduzidos c
 ## Fora de Escopo Inicial
 - Compilador Zephyr/GCC embarcado localmente (o ZMK depende do GitHub Actions ou container Docker externo para compilação).
 - Suporte a firmwares concorrentes (QMK, KMK, Vial) — foco estrito em ZMK.
+

@@ -27,3 +27,4 @@ Transformar o editor em uma ferramenta de referência para o ecossistema ZMK mod
 - **Fase 3 (M3)**: Devicetree AST Engine & Web File System Access (Parser robusto e não-destrutivo).
 - **Fase 4 (M4)**: Periféricos & Hardware (Rotary Encoders e Mouse Keys `CONFIG_ZMK_POINTING`).
 - **Fase 5 (M5)**: Integração com Ecossistema Moderno (GitHub Actions UF2 download, Keymap Drawer SVG e ZMK Studio WebHID).
+

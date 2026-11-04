@@ -17,3 +17,4 @@ Issue: Suporte a navegadores legados (Firefox e Safari) para a Web File System A
 Impact: Nestes navegadores, o diálogo de abertura direta de pastas nativas não está disponível.
 Recommendation: Manter o fallback automático para a API Node/Express local caso `window.showDirectoryPicker` seja indefinido.
 Status: PENDENTE DE DEFINIÇÃO
+

@@ -43,3 +43,4 @@ Leia nesta ordem antes de trabalhar: constitution → 11-project-memory → 10-v
 - Ao fechar um milestone: execute a auditoria do gate com `sdd-validate` antes de avançar.
 - Achado mecanicamente verificável e reincidente vira task de automação, nunca "verificar manualmente". Critical/High bloqueiam, salvo dívida aceita explicitamente pelo usuário.
 - Achado que fica ABERTO em qualquer gate (qualquer severidade) vai para `10-validation.md` como dívida ativa. Ao resolver, mova para `archive/validation-log.md`.
+

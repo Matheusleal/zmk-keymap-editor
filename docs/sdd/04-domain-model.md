@@ -112,3 +112,4 @@ flowchart TD
 2. **Identificadores Devicetree**: O nome de qualquer Combo, Macro ou CustomBehavior deve seguir a regra C identifier (`^[a-zA-Z_][a-zA-Z0-9_]*$`).
 3. **Consistência de Camadas**: O `then-layer` de uma `ConditionalLayer` não pode ser idêntico a nenhum dos `if-layers` (prevenção de loop cíclico).
 4. **Preservação Não-Destrutiva**: Nós Devicetree não reconhecidos pelo modelo visual (ex: nós de pinagem de GPIO, displays, bluetooth profiles customizados) devem ser preservados integralmente na AST e reescritos inalterados na serialização.
+

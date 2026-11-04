@@ -106,3 +106,4 @@ flowchart TD
 - **Decision**: Utilizar chamadas autenticadas pelo cliente à API do GitHub (`/repos/{owner}/{repo}/actions/runs`) para verificar o status do commit e disponibilizar botão de download do artefato `.zip`/`.uf2`.
 - **Rationale**: Fecha a jornada do usuário dentro da ferramenta, eliminando a necessidade de abrir o site do GitHub para baixar o firmware.
 - **Trade-off**: Depende da cota de requisições da GitHub API (60 req/h anônimo, 5000 req/h com token do usuário).
+

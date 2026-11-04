@@ -191,3 +191,4 @@ Sintaxe canônica: **GEARS** (Generalized EARS). Keywords obrigatórias em ingl�
 - **Metric**: Zero ocorrências de tokens em logs, requisições de backend ou artefatos.
 - **Validation Method**: Code audit and network traffic inspection.
 - **Status**: Draft
+
