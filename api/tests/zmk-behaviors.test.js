@@ -43,4 +43,36 @@ test('ZMK Behaviors Metadata Tests', async (t) => {
     assert.ok(indexParam, 'BT_DISC must have index parameter');
     assert.deepEqual(indexParam.enum, [0, 1, 2, 3, 4], 'BT_DISC profiles must be [0, 1, 2, 3, 4]');
   });
+
+  await t.test('FR-001: Modern system behaviors &sys_reset, &soft_off, &kt and backward-compatible &reset', () => {
+    const sysReset = behaviors.find(b => b.code === '&sys_reset');
+    assert.ok(sysReset, '&sys_reset behavior must exist');
+
+    const reset = behaviors.find(b => b.code === '&reset');
+    assert.ok(reset, '&reset legacy behavior must exist');
+
+    const softOff = behaviors.find(b => b.code === '&soft_off');
+    assert.ok(softOff, '&soft_off behavior must exist');
+
+    const kt = behaviors.find(b => b.code === '&kt');
+    assert.ok(kt, '&kt behavior must exist');
+    assert.deepEqual(kt.params, ['code'], '&kt must accept a keycode parameter');
+  });
+
+  await t.test('FR-004: RGB_COLOR_HSB must accept hue, sat, and bri parameters', () => {
+    const rgbBehavior = behaviors.find(b => b.code === '&rgb_ug');
+    assert.ok(rgbBehavior, '&rgb_ug behavior must exist');
+
+    const hsbCmd = rgbBehavior.commands.find(c => c.code === 'RGB_COLOR_HSB');
+    assert.ok(hsbCmd, 'RGB_COLOR_HSB command must exist');
+    assert.ok(Array.isArray(hsbCmd.additionalParams), 'RGB_COLOR_HSB must have additionalParams');
+
+    const hue = hsbCmd.additionalParams.find(p => p.name === 'hue');
+    const sat = hsbCmd.additionalParams.find(p => p.name === 'sat');
+    const bri = hsbCmd.additionalParams.find(p => p.name === 'bri');
+
+    assert.ok(hue && hue.min === 0 && hue.max === 360, 'Hue should be 0-360');
+    assert.ok(sat && sat.min === 0 && sat.max === 100, 'Saturation should be 0-100');
+    assert.ok(bri && bri.min === 0 && bri.max === 100, 'Brightness should be 0-100');
+  });
 });

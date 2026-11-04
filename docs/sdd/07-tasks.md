@@ -24,7 +24,7 @@ Related Requirements: FR-001, FR-004, DES-001
 Done When: &sys_reset, &soft_off, &kt e RGB_COLOR_HSB aparecem com seus respectivos metadados no zmk-behaviors.json e passam na validação de esquema.
 Recommended Agent: self
 Dependencies: TASK-001
-Status: Pending
+Status: Done
 
 TASK-003
 Title: Atualização e sincronização da tabela de keycodes com ZMK moderno
