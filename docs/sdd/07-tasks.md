@@ -14,7 +14,7 @@ Related Requirements: FR-002, FR-003, DES-001
 Done When: As descrições de OUT_USB e OUT_BLE estão corretas no JSON e BT_DISC (com parâmetros 0 a 4) e BT_CLR_ALL estão disponíveis no catálogo.
 Recommended Agent: self
 Dependencies: Nenhuma
-Status: Pending
+Status: Done
 
 TASK-002
 Title: Adição de novos comportamentos modernos do sistema (&sys_reset, &soft_off, &kt, RGB_COLOR_HSB)

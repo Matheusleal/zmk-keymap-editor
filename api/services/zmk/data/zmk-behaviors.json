@@ -41,6 +41,9 @@
       "code": "BT_CLR",
       "description": "Clear bond information between the keyboard and host for the selected profile."
     }, {
+      "code": "BT_CLR_ALL",
+      "description": "Clear bond information between the keyboard and host for all profiles."
+    }, {
       "code": "BT_NXT",
       "description": "Switch to the next profile, cycling through to the first one when the end is reached."
     }, {
@@ -49,6 +52,14 @@
     }, {
       "code": "BT_SEL",
       "description": "Select the 0-indexed profile by number. Please note: this definition must include a number as an argument in the keymap to work correctly. eg. BT_SEL 0",
+      "additionalParams": [{
+        "name": "index",
+        "type": "integer",
+        "enum": [0, 1, 2, 3, 4]
+      }]
+    }, {
+      "code": "BT_DISC",
+      "description": "Disconnect from the selected profile by number. eg. BT_DISC 0",
       "additionalParams": [{
         "name": "index",
         "type": "integer",
@@ -94,10 +105,10 @@
     "includes": ["#include <dt-bindings/zmk/outputs.h>"],
     "commands": [{
       "code": "OUT_BLE",
-      "description": "Prefer sending to USB"
+      "description": "Prefer sending key events to the current Bluetooth profile"
     }, {
       "code": "OUT_USB",
-      "description": "Prefer sending to the current bluetooth profile"
+      "description": "Prefer sending key events to USB"
     }, {
       "code": "OUT_TOG",
       "description": "Toggle between USB and BLE"

@@ -1,20 +1,19 @@
 # 11 — Project Memory (Memória Viva)
 
-Estado atual: Baseline SDD e Planejamento de Execução Estabelecidos.
+Estado atual: Milestone 1 em andamento — TASK-001 Concluída.
 Branch: `feature/planejamento-melhorias-zmk`
 Última Atualização: 2026-11-04
 
 ## 1. Contexto e Decisões Ativas
 - O repositório foi analisado com base no relatório de auditoria `docs/melhorias-zmk.md`.
-- Foi estabelecida a governança formal SDD (Spec-Driven Development) cobrindo os 11 princípios canônicos.
-- A baseline completa de especificações foi gerada nos arquivos `docs/sdd/` (00 a 10).
-- Foram mapeadas 19 tarefas atômicas distribuídas em 5 Milestones (M1 a M5).
+- Governança SDD ativa (00 a 10). Mapeadas 19 tarefas em 5 Milestones (M1 a M5).
+- Autorizado pelo usuário: commits atômicos por task, testes garantidos, sem PR ao final.
+- `TASK-001`: Concluída com sucesso (correções de OUT_USB/OUT_BLE e adição de BT_DISC/BT_CLR_ALL com testes unitários em `api/tests/zmk-behaviors.test.js`).
 
 ## 2. Próximos Passos
-- Apresentar o planejamento ao usuário para validação.
-- Quando o usuário autorizar o início da execução do Milestone 1 (M1 - Quick Wins), mover `TASK-001` para `In Progress` e iniciar a implementação técnica.
+- Comitar `TASK-001`.
+- Iniciar `TASK-002` (&sys_reset, &soft_off, &kt, RGB_COLOR_HSB).
 
 ## 3. Riscos e Alertas
-- Nenhuma alteração no código fonte foi iniciada, em estrita conformidade com a regra "sem código sem task In Progress".
-- Nenhuma pull request foi criada, atendendo à instrução "sem criar o PR".
-
+- Sem PR automático.
+- Manter compatibilidade com formatos legados.
