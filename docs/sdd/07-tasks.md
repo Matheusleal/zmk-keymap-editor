@@ -34,7 +34,7 @@ Related Requirements: FR-005, DES-001
 Done When: Novos keycodes de mídia e navegação estão pesquisáveis no ValuePicker do frontend.
 Recommended Agent: self
 Dependencies: TASK-002
-Status: Pending
+Status: Done
 
 TASK-004
 Title: Adaptação do seletor e validação no frontend para novos metadados da Fase 1

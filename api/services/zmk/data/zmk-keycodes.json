@@ -5547,5 +5547,80 @@
       "ios": null
     },
     "footnotes": {}
+  },
+  {
+    "names": ["C_MUTE_MIC", "C_MIC_MUTE"],
+    "description": "Mute/unmute microphone input",
+    "context": "Consumer",
+    "clarify": false,
+    "documentation": "https://zmk.dev/docs/keycodes",
+    "os": {
+      "windows": true,
+      "linux": true,
+      "android": true,
+      "macos": true,
+      "ios": true
+    },
+    "footnotes": {}
+  },
+  {
+    "names": ["C_AL_TASK_OR_APP", "C_AL_TASK_APP"],
+    "description": "Task/App manager",
+    "context": "Consumer",
+    "clarify": false,
+    "documentation": "https://zmk.dev/docs/keycodes",
+    "os": {
+      "windows": true,
+      "linux": true,
+      "android": true,
+      "macos": true,
+      "ios": true
+    },
+    "footnotes": {}
+  },
+  {
+    "names": ["C_AL_WWW", "C_AL_INTERNET_BROWSER"],
+    "description": "Internet browser",
+    "context": "Consumer",
+    "clarify": false,
+    "documentation": "https://zmk.dev/docs/keycodes",
+    "os": {
+      "windows": true,
+      "linux": true,
+      "android": true,
+      "macos": true,
+      "ios": true
+    },
+    "footnotes": {}
+  },
+  {
+    "names": ["C_KB_LAYOUT_SELECT", "C_KEYBOARD_LAYOUT_SELECT"],
+    "description": "Keyboard layout selector",
+    "context": "Consumer",
+    "clarify": false,
+    "documentation": "https://zmk.dev/docs/keycodes",
+    "os": {
+      "windows": true,
+      "linux": true,
+      "android": true,
+      "macos": true,
+      "ios": true
+    },
+    "footnotes": {}
+  },
+  {
+    "names": ["C_ILLUMINATION_TOGGLE"],
+    "description": "Toggle illumination",
+    "context": "Consumer",
+    "clarify": false,
+    "documentation": "https://zmk.dev/docs/keycodes",
+    "os": {
+      "windows": true,
+      "linux": true,
+      "android": true,
+      "macos": true,
+      "ios": true
+    },
+    "footnotes": {}
   }
 ]
