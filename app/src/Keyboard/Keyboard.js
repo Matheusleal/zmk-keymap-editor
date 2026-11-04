@@ -57,6 +57,15 @@ function Keyboard(props) {
       return param.enum.map(v => ({ code: v }))
     }
 
+    if (param.min !== undefined && param.max !== undefined) {
+      const step = param.name === 'hue' ? 30 : 10
+      const options = []
+      for (let v = param.min; v <= param.max; v += step) {
+        options.push({ code: v, description: `${v}` })
+      }
+      return options
+    }
+
     if (param === 'command') {
       return get(sources, ['behaviours', behaviour, 'commands'], [])
     }

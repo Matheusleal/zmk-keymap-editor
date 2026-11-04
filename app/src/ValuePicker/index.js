@@ -145,7 +145,7 @@ function ValuePicker (props) {
         <input
           ref={focusSearch}
           type="text"
-          value={query !== null ? query : value}
+          value={query !== null ? query : (value !== undefined && value !== null ? value : '')}
           onChange={handleKeyPress}
         />
       )}
@@ -175,7 +175,7 @@ function ValuePicker (props) {
         <div className={style['choices-counter']}>
           Total choices: {choices.length}.
           {enableShowAllButton && (
-            <button onClick={setShowAll(true)}>Show all</button>
+            <button onClick={() => setShowAll(true)}>Show all</button>
           )}
         </div>
       )}
@@ -190,7 +190,10 @@ ValuePicker.propTypes = {
     PropTypes.string,
     PropTypes.object
   ]).isRequired,
-  value: PropTypes.string.isRequired,
+  value: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number
+  ]),
   prompt: PropTypes.string.isRequired,
   searchKey: PropTypes.string.isRequired,
   searchThreshold: PropTypes.number,

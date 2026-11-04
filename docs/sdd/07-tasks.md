@@ -44,7 +44,7 @@ Related Requirements: FR-001, FR-002, FR-003, FR-004, FR-005
 Done When: O usuário consegue selecionar &sys_reset, &soft_off, &kt, BT_DISC com seletor de perfil e os novos keycodes no navegador sem erros de renderização.
 Recommended Agent: self
 Dependencies: TASK-003
-Status: Pending
+Status: Done
 
 <!-- Registro do gate M1 (data) — veredito do sdd-validator -->
 
