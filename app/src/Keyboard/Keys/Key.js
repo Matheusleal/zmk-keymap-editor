@@ -89,12 +89,13 @@ function Key(props) {
       onMouseOver={onMouseOver}
       onMouseLeave={onMouseLeave}
     >
-    {behaviour ? (
+    {value ? (
       <span
         className={styles['behaviour-binding']}
         onClick={handleSelectBehaviour}
+        title={behaviour?.description || value}
       >
-        {behaviour.code}
+        {(behaviour?.code || value).replace(/^&/, '')}
       </span>
     ) : null}
     <KeyParamlist

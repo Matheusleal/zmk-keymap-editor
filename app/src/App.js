@@ -159,10 +159,42 @@ function App() {
       </div>
 
       <Loader load={initialize}>
-        <div id="app-header">
-          <KeyboardPicker onSelect={handleKeyboardSelected} />
+        {!keymap || !layout ? (
+          <KeyboardPicker
+            onSelect={handleKeyboardSelected}
+            isLoaded={false}
+          />
+        ) : (
+          <div id="app-header">
+            <div className="header-context">
+              <button
+                className="back-btn"
+                title="Switch keyboard or select another source"
+                onClick={() => {
+                  setKeymap(null)
+                  setLayout(null)
+                  setEditingKeymap(null)
+                }}
+              >
+                <i className="fa-solid fa-arrow-left" />
+                <span>Sources</span>
+              </button>
 
-          {keymap && (
+              <div className="keyboard-meta">
+                <span className="keyboard-name">
+                  {keymap.name || sourceOther?.fileName?.replace('.keymap', '') || 'ZMK Keyboard'}
+                </span>
+                <span className="source-pill">
+                  {source === 'webfs' ? 'Local Folder' : source === 'local' ? 'Local Server' : 'GitHub'}
+                </span>
+                {editingKeymap && (
+                  <span className="unsaved-badge" title="You have unsaved changes">
+                    ● Unsaved Changes
+                  </span>
+                )}
+              </div>
+            </div>
+
             <ul className="editor-tabs">
               {tabs.map(tab => (
                 <li
@@ -181,10 +213,8 @@ function App() {
                 </li>
               ))}
             </ul>
-          )}
 
-          <div className="header-actions">
-            {keymap && (
+            <div className="header-actions">
               <button
                 title="Export visual SVG diagram of all layers and combos"
                 onClick={() => setShowExportSvg(true)}
@@ -192,53 +222,53 @@ function App() {
                 <i className="fa-solid fa-file-image" />
                 Export SVG
               </button>
-            )}
 
-            {source === 'local' && (
-              <button
-                className="primary"
-                disabled={!editingKeymap}
-                onClick={handleCompile}
-              >
-                <i className="fa-solid fa-floppy-disk" />
-                Save Local
-              </button>
-            )}
-
-            {source === 'webfs' && (
-              <button
-                className="primary"
-                disabled={!editingKeymap}
-                onClick={handleSaveWebFs}
-              >
-                <i className="fa-solid fa-floppy-disk" />
-                {saving ? 'Saving...' : 'Save to Folder'}
-              </button>
-            )}
-
-            {source === 'github' && (
-              <>
+              {source === 'local' && (
                 <button
                   className="primary"
-                  title="Commit keymap changes to GitHub repository"
                   disabled={!editingKeymap}
-                  onClick={handleCommitChanges}
+                  onClick={handleCompile}
                 >
-                  <i className="fa-solid fa-cloud-arrow-up" />
-                  {saving ? 'Saving' : 'Commit Changes'}
-                  {saving && <Spinner />}
+                  <i className="fa-solid fa-floppy-disk" />
+                  Save Local
                 </button>
+              )}
+
+              {source === 'webfs' && (
                 <button
-                  title="Monitor firmware compilation on GitHub Actions and download .uf2"
-                  onClick={() => setShowActions(true)}
+                  className="primary"
+                  disabled={!editingKeymap}
+                  onClick={handleSaveWebFs}
                 >
-                  <i className="fa-solid fa-microchip" />
-                  Firmware Build
+                  <i className="fa-solid fa-floppy-disk" />
+                  {saving ? 'Saving...' : 'Save to Folder'}
                 </button>
-              </>
-            )}
+              )}
+
+              {source === 'github' && (
+                <>
+                  <button
+                    className="primary"
+                    title="Commit keymap changes to GitHub repository"
+                    disabled={!editingKeymap}
+                    onClick={handleCommitChanges}
+                  >
+                    <i className="fa-solid fa-cloud-arrow-up" />
+                    {saving ? 'Saving' : 'Commit Changes'}
+                    {saving && <Spinner />}
+                  </button>
+                  <button
+                    title="Monitor firmware compilation on GitHub Actions and download .uf2"
+                    onClick={() => setShowActions(true)}
+                  >
+                    <i className="fa-solid fa-microchip" />
+                    Firmware Build
+                  </button>
+                </>
+              )}
+            </div>
           </div>
-        </div>
+        )}
 
         <DefinitionsContext.Provider value={definitions}>
           {layout && keymap && (
@@ -249,6 +279,7 @@ function App() {
             />
           )}
         </DefinitionsContext.Provider>
+
 
         {showCombos && (
           <ComboManager

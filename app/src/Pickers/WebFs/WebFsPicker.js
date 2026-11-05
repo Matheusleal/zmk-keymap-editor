@@ -151,31 +151,53 @@ export default function WebFsPicker({ onSelect }) {
   }
 
   return (
-    <div style={{ marginTop: '10px' }}>
+    <div style={{ textAlign: 'center', padding: '10px 0' }}>
+      <h3 style={{ margin: '0 0 10px 0', fontSize: '18px' }}>Select ZMK Keyboard Folder</h3>
+      <p style={{
+        fontSize: '14px',
+        color: 'var(--key-color-base)',
+        maxWidth: '480px',
+        margin: '0 auto 20px auto',
+        lineHeight: 1.5
+      }}>
+        Choose your keyboard directory (such as <code>zmk-config</code> or <code>zmk-sofle</code>).
+        The editor will automatically discover your <code>.keymap</code> and <code>info.json</code> layout.
+      </p>
+
       <button
         type="button"
         disabled={loading}
         onClick={handleOpenDirectory}
         style={{
-          background: '#0284c7',
+          backgroundColor: 'var(--selection)',
           color: '#ffffff',
           border: 'none',
-          padding: '8px 16px',
-          borderRadius: '6px',
+          padding: '10px 22px',
+          borderRadius: '8px',
           cursor: loading ? 'not-allowed' : 'pointer',
-          fontWeight: 500,
-          fontSize: '0.9rem'
+          fontWeight: 600,
+          fontSize: '14px',
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: '8px',
+          boxShadow: '0 2px 6px rgba(0,0,0,0.1)'
         }}
       >
-        {loading ? 'Opening Folder...' : 'Open Local Folder'}
+        <i className="fa-solid fa-folder-open" />
+        {loading ? 'Reading Folder...' : 'Open Local Folder'}
       </button>
 
       {error && (
         <div style={{
-          marginTop: '8px',
-          color: '#ef4444',
-          fontSize: '0.85rem'
+          marginTop: '16px',
+          color: 'var(--error-highlight)',
+          fontSize: '14px',
+          background: 'rgba(179, 60, 60, 0.1)',
+          padding: '8px 14px',
+          borderRadius: '6px',
+          display: 'inline-block'
         }}>
+          <i className="fa-solid fa-triangle-exclamation" style={{ marginRight: '6px' }} />
           {error}
         </div>
       )}

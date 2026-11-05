@@ -248,4 +248,16 @@ Recommended Agent: self
 Dependencies: TASK-019
 Status: Done
 
+TASK-021
+Title: Redesenho da experiência de seleção inicial (Welcome Page) e uniformização das informações do teclado ativo
+Goal: Substituir o dropdown cru de fontes por uma tela inicial acolhedora com cards (Welcome Page idêntica ao nickcoutsos.github.io/keymap-editor), adicionar breadcrumbs/cabeçalho de contexto com metadados do teclado (nome, repositório, layout e status de alteração) e uniformizar a apresentação visual das keycaps e widgets.
+Inputs: app/src/App.js, app/src/App.css, app/src/Pickers/KeyboardPicker.js, app/src/Keyboard/Keyboard.js, app/src/Keyboard/LayerSelector.js
+Related Requirements: NFR-004, DES-001
+Done When: Tela inicial exibe cards visuais de boas-vindas com ícones grandes e descrições para cada fonte; teclado carregado exibe barra superior com nome do teclado/layout, indicador de alterações não salvas, botão de trocar fonte e keycaps com legendas primárias e secundárias nítidas.
+Recommended Agent: self
+Dependencies: TASK-020
+Status: Done
+
+
+
 

@@ -51,18 +51,20 @@
 
 .behaviour-binding {
   position: absolute;
-  top: 0;
-  left: 0;
-  font-size: 10px;
-  font-variant: smallcaps;
-  padding: 2px;
-  opacity: 0.5;
+  top: 3px;
+  left: 5px;
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  opacity: 0.65;
+  color: var(--key-color-base);
+  transition: opacity 150ms ease, color 150ms ease;
+  user-select: none;
 }
 
 .behaviour-binding:hover {
   cursor: pointer;
-  color: var(--hover-selection) !important;
-  background-color: white;
-  border-radius: 5px 0;
+  color: var(--selection) !important;
   opacity: 1;
 }
