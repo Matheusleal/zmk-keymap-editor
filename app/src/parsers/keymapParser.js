@@ -52,21 +52,41 @@ export function parseDtsToKeymap(dtsContent) {
   const layers = []
   const sensor_bindings = []
 
-  // Extract keymap node contents
-  const keymapMatch = dtsContent.match(/keymap\s*\{([\s\S]*?)\n\s*\};\s*(\n|\}|$)/)
-  const keymapBody = keymapMatch ? keymapMatch[1] : dtsContent
+  // Extract keymap node body using brace counting
+  let keymapBody = dtsContent
+  const kmMatch = dtsContent.match(/(?:^|\s)keymap\s*\{/)
+  if (kmMatch) {
+    const start = kmMatch.index + kmMatch[0].length
+    let depth = 1
+    let pos = start
+    while (pos < dtsContent.length && depth > 0) {
+      if (dtsContent[pos] === '{') depth++
+      else if (dtsContent[pos] === '}') depth--
+      pos++
+    }
+    keymapBody = dtsContent.substring(start, pos - 1)
+  }
 
-  // Match each layer node e.g. layer_0 { ... };
-  const layerRegex = /([a-zA-Z0-9_]+)\s*\{([\s\S]*?)\};\s*(?=\n\s*[a-zA-Z0-9_]+\s*\{|$)/g
-  let match
-
-  while ((match = layerRegex.exec(keymapBody)) !== null) {
-    const layerNodeName = match[1]
-    const layerBody = match[2]
+  // Find each layer inside keymapBody using brace counting
+  const nodeHeaderRegex = /(?:^|\s)([a-zA-Z0-9_]+)\s*\{/g
+  let headerMatch
+  while ((headerMatch = nodeHeaderRegex.exec(keymapBody)) !== null) {
+    const nodeName = headerMatch[1]
+    if (nodeName === 'compatible') continue
+    const start = headerMatch.index + headerMatch[0].length
+    let depth = 1
+    let pos = start
+    while (pos < keymapBody.length && depth > 0) {
+      if (keymapBody[pos] === '{') depth++
+      else if (keymapBody[pos] === '}') depth--
+      pos++
+    }
+    const layerBody = keymapBody.substring(start, pos - 1)
+    nodeHeaderRegex.lastIndex = pos
 
     // Extract display-name or label
     const nameMatch = layerBody.match(/(?:display-name|label)\s*=\s*"([^"]+)"/)
-    const layerName = nameMatch ? nameMatch[1] : layerNodeName
+    const layerName = nameMatch ? nameMatch[1] : nodeName
     layer_names.push(layerName)
 
     // Extract bindings = < ... >;

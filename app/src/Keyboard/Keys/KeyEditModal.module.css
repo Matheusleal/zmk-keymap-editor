@@ -4,88 +4,81 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.65);
+  background-color: rgba(0, 0, 0, 0.45);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  backdrop-filter: blur(2px);
+  animation: modal-fade 120ms ease-out;
+}
+
+@keyframes modal-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .modalContent {
   display: flex;
-  background-color: var(--dialog-bg, #1e2228);
-  border: 1px solid var(--code-bg, rgba(255, 255, 255, 0.1));
-  border-radius: 10px;
-  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.55);
+  background-color: var(--dialog-bg, #1c1f22);
+  border: 1px solid var(--key-bg-base, rgba(255, 255, 255, 0.12));
+  border-radius: 12px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.55);
   color: var(--fg, #e6e6e6);
-  max-width: 90vw;
+  max-width: 95vw;
   max-height: 90vh;
-  overflow: hidden;
-  animation: modal-fade-in 150ms ease-out;
-}
-
-@keyframes modal-fade-in {
-  from {
-    opacity: 0;
-    transform: scale(0.96);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
+  overflow: visible;
+  position: relative;
 }
 
 .mainPanel {
-  min-width: 440px;
+  min-width: 400px;
   max-width: 480px;
-  padding: 24px 28px;
+  padding: 24px 36px;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
 }
 
+/* Header Row (Mini-Matrix -> Arrow -> Keycap Preview) */
 .headerRow {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding-bottom: 18px;
+  justify-content: center;
+  border-bottom: 1px solid var(--key-bg-base, rgba(255, 255, 255, 0.1));
+  padding-bottom: 20px;
+  gap: 36px;
 }
 
 .matrixWrapper {
   position: relative;
   display: inline-block;
-  background: rgba(0, 0, 0, 0.25);
-  border-radius: 6px;
-  padding: 6px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: transparent;
 }
 
 .miniKey {
   position: absolute;
-  background-color: rgba(255, 255, 255, 0.18);
-  border-radius: 1.5px;
-  transition: all 150ms ease;
+  background-color: var(--key-bg-rgb, #31414e);
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
 }
 
 .miniKeyActive {
   background-color: var(--selection, #3cb371) !important;
-  box-shadow: 0 0 8px rgba(60, 179, 113, 0.8) !important;
+  box-shadow: 0 0 6px rgba(60, 179, 113, 0.9) !important;
   z-index: 2;
 }
 
 .arrow {
   font-size: 20px;
   color: var(--key-color-base, #888);
-  opacity: 0.8;
-  margin: 0 16px;
   user-select: none;
 }
 
 .previewKeycap {
   position: relative;
-  width: 68px;
-  height: 56px;
-  background-color: var(--key-bg-base, #2a313c);
+  width: 58px;
+  height: 52px;
+  background-color: var(--key-bg-base, hsl(208.2, 23%, 18%));
   color: var(--key-color-base, #eee);
   border-radius: 6px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
@@ -93,7 +86,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .previewBehavior {
@@ -101,14 +94,14 @@
   top: 4px;
   left: 6px;
   font-size: 10px;
-  font-weight: 700;
+  font-weight: 600;
+  color: #7d9bb3;
   text-transform: uppercase;
-  opacity: 0.7;
   letter-spacing: 0.5px;
 }
 
 .previewKeycode {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 700;
   color: #ffffff;
   padding-top: 6px;
@@ -116,14 +109,15 @@
 
 .divider {
   height: 1px;
-  background-color: rgba(255, 255, 255, 0.1);
-  margin-bottom: 20px;
+  background-color: var(--key-bg-base, rgba(255, 255, 255, 0.08));
+  margin: 18px 0;
 }
 
+/* Behavior Line */
 .fieldRow {
   display: flex;
   align-items: center;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
   gap: 12px;
 }
 
@@ -131,7 +125,7 @@
   font-size: 16px;
   font-weight: 700;
   color: var(--fg, #ffffff);
-  min-width: 90px;
+  min-width: 80px;
 }
 
 .editableSlot {
@@ -139,18 +133,29 @@
   align-items: center;
   gap: 6px;
   cursor: pointer;
-  padding: 4px 8px;
+  padding: 3px 8px;
   border-radius: 4px;
-  background-color: rgba(255, 255, 255, 0.06);
-  border-bottom: 1.5px dotted var(--key-color-base, #aaa);
-  transition: all 150ms ease;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-bottom: 0.15em dotted var(--key-color-base, #aaa);
+  transition: all 120ms ease;
   user-select: none;
 }
 
-.editableSlot:hover,
+.editableSlot:hover {
+  background-color: var(--hover-selection, rgba(60, 179, 113, 0.3));
+  border-bottom-style: solid;
+}
+
 .editableSlotActive {
-  background-color: rgba(60, 179, 113, 0.18);
-  border-bottom-color: var(--selection, #3cb371);
+  background-color: var(--selection, #3cb371) !important;
+  color: #ffffff !important;
+  border-bottom-style: solid;
+}
+
+.editableSlotActive .slotCode,
+.editableSlotActive .slotDesc,
+.editableSlotActive .slotDivider {
+  color: #ffffff !important;
 }
 
 .slotCode {
@@ -161,7 +166,7 @@
 }
 
 .slotDivider {
-  color: rgba(255, 255, 255, 0.3);
+  color: rgba(255, 255, 255, 0.35);
   font-size: 13px;
 }
 
@@ -170,16 +175,17 @@
   color: var(--key-color-base, #bbb);
 }
 
+/* Parameters Section */
 .parametersSection {
   margin-top: 10px;
-  margin-bottom: 24px;
+  margin-bottom: 22px;
 }
 
 .sectionTitle {
   font-size: 16px;
   font-weight: 700;
   color: var(--fg, #ffffff);
-  margin: 0 0 14px 0;
+  margin: 0 0 12px 0;
 }
 
 .paramRow {
@@ -197,10 +203,11 @@
   min-width: 80px;
 }
 
+/* Actions Row */
 .actionsRow {
   display: flex;
   justify-content: center;
-  gap: 12px;
+  gap: 15px;
   margin-top: auto;
   padding-top: 10px;
 }
@@ -210,10 +217,10 @@
   background-color: var(--selection, #3cb371);
   color: #ffffff;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 700;
   border: none;
-  border-radius: 5px;
-  padding: 7px 22px;
+  border-radius: 4px;
+  padding: 6px 20px;
   transition: background-color 150ms ease, transform 100ms ease;
 }
 
@@ -227,60 +234,153 @@
 
 .cancelBtn {
   cursor: pointer;
+  background-color: var(--key-bg-rgb, #31414e);
   background-color: rgba(255, 255, 255, 0.12);
   color: var(--fg, #e6e6e6);
   font-size: 14px;
   font-weight: 600;
   border: none;
-  border-radius: 5px;
-  padding: 7px 20px;
+  border-radius: 4px;
+  padding: 6px 18px;
   transition: background-color 150ms ease;
 }
 
 .cancelBtn:hover {
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(255, 255, 255, 0.22);
 }
 
-/* Side Picker Panel */
-.sidePanel {
-  width: 320px;
-  border-left: 1px solid rgba(255, 255, 255, 0.1);
-  background-color: rgba(0, 0, 0, 0.2);
+/* Canonical Attached Side Edit Panel */
+.editPanel {
+  position: relative;
+  width: 290px;
+  max-height: 480px;
+  padding: 20px;
+  border-left: 1px solid var(--key-bg-base, rgba(255, 255, 255, 0.12));
   display: flex;
   flex-direction: column;
 }
 
-.sidePanelHeader {
-  padding: 14px 16px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+.editPanelClose {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  font-size: 75%;
+  transform-origin: top left;
+  transform: translate(-25%, 100%) rotate(-90deg);
+  background-color: var(--dialog-bg, #1c1f22);
+  color: var(--key-color-base, #ccc);
+  border: 1px solid var(--key-bg-base, rgba(255, 255, 255, 0.15));
+  border-radius: 4px;
+  padding: 3px 10px;
+  cursor: pointer;
+  user-select: none;
+  z-index: 10;
 }
 
-.sidePanelTitle {
+.editPanelClose:hover {
+  background-color: var(--key-bg-base, #31414e);
+  color: #ffffff;
+}
+
+.editPanelHeader {
+  margin-bottom: 10px;
+}
+
+.editPanelTitle {
   font-size: 14px;
   font-weight: 700;
   color: #ffffff;
 }
 
-.sidePanelClose {
-  background: none;
-  border: none;
-  color: var(--key-color-base, #aaa);
-  cursor: pointer;
-  font-size: 16px;
-  padding: 2px 6px;
+.searchBox {
+  margin-bottom: 8px;
+}
+
+.searchInput {
+  display: block;
+  width: 100%;
+  height: 32px;
+  line-height: 32px;
+  font-size: 14px;
+  margin: 0;
+  padding: 4px 8px;
+  border: 1px solid var(--key-bg-base, rgba(255, 255, 255, 0.15));
+  border-radius: 4px;
+  box-sizing: border-box;
+  background: rgba(0, 0, 0, 0.45);
+  color: #ffffff;
+  outline: none;
+}
+
+.searchInput:focus {
+  border-color: var(--selection, #3cb371);
+}
+
+.choicesList {
+  position: relative;
+  font-family: monospace;
+  list-style-type: none;
+  flex-grow: 1;
+  max-height: 340px;
+  overflow-y: auto;
+  padding: 4px;
+  margin: 0;
+  background: rgba(0, 0, 0, 0.65);
   border-radius: 4px;
 }
 
-.sidePanelClose:hover {
-  color: #ffffff;
-  background-color: rgba(255, 255, 255, 0.1);
+.choicesList::-webkit-scrollbar {
+  width: 6px;
 }
 
-.sidePanelBody {
-  padding: 14px 16px;
-  overflow-y: auto;
-  flex: 1;
+.choicesList::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+
+.choiceItem {
+  cursor: pointer;
+  color: #ffffff;
+  padding: 6px 8px;
+  border-radius: 3px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.choiceItem:hover,
+.choiceItemActive {
+  background: #ffffff;
+  color: #000000;
+}
+
+.choiceItemActive .choiceCode,
+.choiceItemActive .choiceDesc,
+.choiceItem:hover .choiceCode,
+.choiceItem:hover .choiceDesc {
+  color: #000000 !important;
+}
+
+.choiceCode {
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.choiceDesc {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.65);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 150px;
+}
+
+.noResults {
+  padding: 12px;
+  color: rgba(255, 255, 255, 0.45);
+  font-style: italic;
+  font-size: 12px;
+  text-align: center;
 }

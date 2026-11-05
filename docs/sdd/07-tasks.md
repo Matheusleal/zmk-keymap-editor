@@ -268,6 +268,17 @@ Recommended Agent: self
 Dependencies: TASK-021
 Status: Done
 
+TASK-023
+Title: Refatoração integral da UI, fidelidade canônica com nickcoutsos.github.io/keymap-editor e robustez do parser local
+Goal: Refatorar completamente a interface do usuário e o modal de edição de teclas para espelhar 100% o design canônico do Keymap Editor (https://nickcoutsos.github.io/keymap-editor/), corrigindo o popup de edição com painel lateral acoplado elegante e search list integrada, alinhando tipografia, paleta e espaçamentos, e corrigindo o parser client-side de Devicetree para carregar perfeitamente pastas locais complexas como zmk-sofle.
+Inputs: app/src/Keyboard/Keys/KeyEditModal.js, app/src/Keyboard/Keys/KeyEditModal.module.css, app/src/parsers/keymapParser.js, app/src/App.css, app/src/App.js, app/src/Keyboard/Keys/styles.module.css, app/src/Keyboard/styles.module.css
+Related Requirements: NFR-001, NFR-004, DES-001
+Done When: O keymap de zmk-sofle carrega com todas as camadas e 64 teclas perfeitamente preenchidas; clicar em qualquer tecla abre o popup com proporções, cores e comportamento idênticos à referência com painel de busca de opções suavemente integrado; e a aplicação visualmente coincide em 100% com nickcoutsos.github.io/keymap-editor.
+Recommended Agent: self
+Dependencies: TASK-022
+Status: Done
+
+
 
 
 

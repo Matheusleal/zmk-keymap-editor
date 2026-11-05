@@ -49,6 +49,8 @@ function Key(props) {
       data-label={label}
       data-u={size.u}
       data-h={size.h}
+      data-none={value === '&none'}
+      data-trans={value === '&trans'}
       data-simple={isSimple(normalized)}
       data-long={isComplex(normalized, behaviourParams)}
       style={{ ...positioningStyle, cursor: 'pointer' }}

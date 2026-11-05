@@ -26,6 +26,16 @@
 .key[data-simple="true"] { font-size: 140%; }
 .key[data-long="true"] { font-size: 60%; }
 
+.key[data-none="true"] {
+  background-color: var(--key-none-bg-base);
+  opacity: 0.5;
+}
+
+.key[data-trans="true"] {
+  background-color: var(--key-none-bg-base);
+  opacity: 0.7;
+}
+
 .params:not([data-is-root="true"])::before { content: '('; opacity: 0.4; font-weight: bold; margin: 2px; }
 .params:not([data-is-root="true"])::after { content: ')'; opacity: 0.4; font-weight: bold; margin: 2px; }
 .params:not([data-is-root="true"]) .param:not(:last-child)::after { content: ','; }

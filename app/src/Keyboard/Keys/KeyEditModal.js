@@ -1,9 +1,9 @@
 import get from 'lodash/get'
 import PropTypes from 'prop-types'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import fuzzysort from 'fuzzysort'
 
 import { getBehaviourParams } from '../../keymap'
-import ValuePicker from '../../ValuePicker'
 import styles from './KeyEditModal.module.css'
 
 export default function KeyEditModal(props) {
@@ -22,11 +22,16 @@ export default function KeyEditModal(props) {
   const [pendingValue, setPendingValue] = useState(value || '&kp')
   const [pendingParams, setPendingParams] = useState(params || [])
   const [editingSlot, setEditingSlot] = useState(null)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [highlightedIndex, setHighlightedIndex] = useState(0)
+  const searchInputRef = useRef(null)
 
   useEffect(() => {
     setPendingValue(value || '&kp')
     setPendingParams(params || [])
     setEditingSlot(null)
+    setSearchQuery('')
+    setHighlightedIndex(0)
   }, [value, params, isOpen])
 
   const currentBehavior = useMemo(() => {
@@ -45,7 +50,7 @@ export default function KeyEditModal(props) {
     if (!layout || layout.length === 0) return { width: 140, height: 60, scale: 9 }
     const bounds = layout.reduce(
       (acc, k) => ({
-        maxX: Math.max(acc.maxX, (k.x || 0) + (k.w || 1)),
+        maxX: Math.max(acc.maxX, (k.x || 0) + (k.w || k.u || 1)),
         maxY: Math.max(acc.maxY, (k.y || 0) + (k.h || 1))
       }),
       { maxX: 0, maxY: 0 }
@@ -61,7 +66,9 @@ export default function KeyEditModal(props) {
   // Keycap preview text
   const previewKeycode = useMemo(() => {
     if (!pendingParams || pendingParams.length === 0) {
-      return pendingValue === '&none' ? '·' : ''
+      if (pendingValue === '&none') return '·'
+      if (pendingValue === '&trans') return '▽'
+      return ''
     }
     const first = pendingParams[0]?.value || ''
     const keyInfo = get(sources.keycodes, first) || get(sources.code, first)
@@ -94,32 +101,52 @@ export default function KeyEditModal(props) {
     onClose()
   }, [onApply, onClose, pendingValue, pendingParams])
 
-  const handleSelectBehavior = (selectedItem) => {
+  const handleSelectBehavior = useCallback((selectedItem) => {
     const newBehaviorCode = selectedItem.code || selectedItem
     setPendingValue(newBehaviorCode)
     const newBehaviorObj = get(sources.behaviours, newBehaviorCode)
     const newExpected = getBehaviourParams([], newBehaviorObj)
-    // Initialize empty parameters if expected
     const initialParams = newExpected.map(p => ({
       value: p === 'code' ? 'SPACE' : p === 'layer' ? '0' : '0',
       params: []
     }))
     setPendingParams(initialParams)
     setEditingSlot(null)
-  }
+  }, [sources.behaviours])
 
-  const handleSelectParamValue = (selectedItem) => {
+  const handleSelectParamValue = useCallback((selectedItem) => {
     if (!editingSlot || editingSlot.paramIndex === undefined) return
-    const chosenCode = selectedItem.code || selectedItem
+    const chosenCode = selectedItem.code !== undefined ? selectedItem.code : selectedItem
     const updated = [...pendingParams]
     updated[editingSlot.paramIndex] = {
-      value: chosenCode,
+      value: String(chosenCode),
       params: []
     }
     setPendingParams(updated)
     setEditingSlot(null)
-  }
+  }, [editingSlot, pendingParams])
 
+  // Filter choices for the active slot
+  const currentChoices = useMemo(() => {
+    if (!editingSlot) return []
+    const targets = editingSlot.targets || []
+    if (!searchQuery.trim()) return targets.slice(0, 50)
+    const options = { key: 'code', limit: 50 }
+    const results = fuzzysort.go(searchQuery, targets, options)
+    return results.map(r => r.obj)
+  }, [editingSlot, searchQuery])
+
+  // Focus search input when slot opens
+  useEffect(() => {
+    if (editingSlot && searchInputRef.current) {
+      searchInputRef.current.focus()
+      searchInputRef.current.select()
+    }
+    setSearchQuery('')
+    setHighlightedIndex(0)
+  }, [editingSlot])
+
+  // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (!isOpen) return
@@ -129,23 +156,37 @@ export default function KeyEditModal(props) {
         } else {
           onClose()
         }
-      } else if (e.key === 'Enter' && !editingSlot) {
-        handleApply()
+      } else if (e.key === 'ArrowDown' && editingSlot) {
+        e.preventDefault()
+        setHighlightedIndex(prev => Math.min(prev + 1, currentChoices.length - 1))
+      } else if (e.key === 'ArrowUp' && editingSlot) {
+        e.preventDefault()
+        setHighlightedIndex(prev => Math.max(prev - 1, 0))
+      } else if (e.key === 'Enter') {
+        e.preventDefault()
+        if (editingSlot && currentChoices.length > 0) {
+          const item = currentChoices[highlightedIndex] || currentChoices[0]
+          if (editingSlot.type === 'behavior') handleSelectBehavior(item)
+          else handleSelectParamValue(item)
+        } else if (!editingSlot) {
+          handleApply()
+        }
       }
     }
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [isOpen, editingSlot, onClose, handleApply])
+  }, [isOpen, editingSlot, currentChoices, highlightedIndex, onClose, handleApply, handleSelectBehavior, handleSelectParamValue])
 
   if (!isOpen) return null
 
   return (
     <div className={styles.overlay} onClick={onClose}>
       <div className={styles.modalContent} onClick={e => e.stopPropagation()}>
+        {/* Main Panel */}
         <div className={styles.mainPanel}>
           {/* Top Preview Row */}
           <div className={styles.headerRow}>
-            {/* Mini Keyboard Matrix with active key in green */}
+            {/* Mini Keyboard Matrix */}
             <div
               className={styles.matrixWrapper}
               style={{
@@ -187,12 +228,16 @@ export default function KeyEditModal(props) {
               className={`${styles.editableSlot} ${editingSlot?.type === 'behavior' ? styles.editableSlotActive : ''}`}
               title="Click to change behavior"
               onClick={() => {
-                setEditingSlot({
-                  type: 'behavior',
-                  title: 'Select Behavior',
-                  targets: getSearchTargets('behaviour', pendingValue),
-                  value: pendingValue
-                })
+                if (editingSlot?.type === 'behavior') {
+                  setEditingSlot(null)
+                } else {
+                  setEditingSlot({
+                    type: 'behavior',
+                    title: 'Select Behavior',
+                    targets: getSearchTargets('behaviour', pendingValue),
+                    value: pendingValue
+                  })
+                }
               }}
             >
               <span className={styles.slotCode}>{currentBehavior.code || pendingValue}</span>
@@ -221,25 +266,28 @@ export default function KeyEditModal(props) {
                       : paramDef.charAt(0).toUpperCase() + paramDef.slice(1)
                     : paramDef.name || `Param ${pIdx + 1}`
 
+                const isCurrentActive =
+                  editingSlot?.type === 'param' && editingSlot?.paramIndex === pIdx
+
                 return (
                   <div key={pIdx} className={styles.paramRow}>
                     <span className={styles.paramLabel}>{paramName}</span>
                     <span
-                      className={`${styles.editableSlot} ${
-                        editingSlot?.type === 'param' && editingSlot?.paramIndex === pIdx
-                          ? styles.editableSlotActive
-                          : ''
-                      }`}
+                      className={`${styles.editableSlot} ${isCurrentActive ? styles.editableSlotActive : ''}`}
                       title="Click to change parameter"
                       onClick={() => {
-                        setEditingSlot({
-                          type: 'param',
-                          paramIndex: pIdx,
-                          title: `Select ${paramName}`,
-                          param: paramDef,
-                          targets: getSearchTargets(paramDef, pendingValue),
-                          value: paramVal
-                        })
+                        if (isCurrentActive) {
+                          setEditingSlot(null)
+                        } else {
+                          setEditingSlot({
+                            type: 'param',
+                            paramIndex: pIdx,
+                            title: `Select ${paramName}`,
+                            param: paramDef,
+                            targets: getSearchTargets(paramDef, pendingValue),
+                            value: paramVal
+                          })
+                        }
                       }}
                     >
                       <span className={styles.slotCode}>{info.code}</span>
@@ -263,33 +311,59 @@ export default function KeyEditModal(props) {
           </div>
         </div>
 
-        {/* Side Picker Panel when user clicks a slot */}
+        {/* Canonical Attached Side Edit Panel */}
         {editingSlot && (
-          <div className={styles.sidePanel}>
-            <div className={styles.sidePanelHeader}>
-              <span className={styles.sidePanelTitle}>{editingSlot.title}</span>
-              <button
-                className={styles.sidePanelClose}
-                onClick={() => setEditingSlot(null)}
-              >
-                ✕
-              </button>
+          <div className={styles.editPanel}>
+            <button
+              className={styles.editPanelClose}
+              title="Close options panel"
+              onClick={() => setEditingSlot(null)}
+            >
+              Close
+            </button>
+            <div className={styles.editPanelHeader}>
+              <span className={styles.editPanelTitle}>{editingSlot.title}</span>
             </div>
-            <div className={styles.sidePanelBody}>
-              <ValuePicker
-                value={editingSlot.value}
-                param={editingSlot.param || 'code'}
-                choices={editingSlot.targets || []}
-                prompt="Search or select value..."
-                searchKey="code"
-                onSelect={
-                  editingSlot.type === 'behavior'
-                    ? handleSelectBehavior
-                    : handleSelectParamValue
-                }
-                onCancel={() => setEditingSlot(null)}
+            <div className={styles.searchBox}>
+              <input
+                ref={searchInputRef}
+                type="text"
+                className={styles.searchInput}
+                placeholder="Search..."
+                value={searchQuery}
+                onChange={e => {
+                  setSearchQuery(e.target.value)
+                  setHighlightedIndex(0)
+                }}
               />
             </div>
+            <ul className={styles.choicesList}>
+              {currentChoices.length === 0 ? (
+                <li className={styles.noResults}>No matches found</li>
+              ) : (
+                currentChoices.map((item, idx) => {
+                  const isHighlighted = idx === highlightedIndex
+                  const itemCode = item.code || item
+                  const itemDesc = item.description || item.symbol || ''
+                  return (
+                    <li
+                      key={idx}
+                      className={`${styles.choiceItem} ${isHighlighted ? styles.choiceItemActive : ''}`}
+                      onClick={() => {
+                        if (editingSlot.type === 'behavior') handleSelectBehavior(item)
+                        else handleSelectParamValue(item)
+                      }}
+                      onMouseEnter={() => setHighlightedIndex(idx)}
+                    >
+                      <span className={styles.choiceCode}>{itemCode}</span>
+                      {itemDesc && (
+                        <span className={styles.choiceDesc}>{itemDesc}</span>
+                      )}
+                    </li>
+                  )
+                })
+              )}
+            </ul>
           </div>
         )}
       </div>
