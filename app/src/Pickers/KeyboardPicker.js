@@ -41,12 +41,16 @@ function KeyboardPicker(props) {
   }, [onSelect, source])
 
   const fetchLocalKeyboard = useMemo(() => async function() {
-    const [layout, keymap] = await Promise.all([
-      loadLayout(),
-      loadKeymap()
-    ])
+    try {
+      const [layout, keymap] = await Promise.all([
+        loadLayout(),
+        loadKeymap()
+      ])
 
-    handleKeyboardSelected({ source, layout, keymap })
+      handleKeyboardSelected({ source, layout, keymap })
+    } catch (err) {
+      console.warn('Failed to load local keyboard automatically from server:', err)
+    }
   }, [source, handleKeyboardSelected])
 
   useEffect(() => {

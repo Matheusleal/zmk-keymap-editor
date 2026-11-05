@@ -525,7 +525,8 @@ function loadKeymapFromDts(dtsContent) {
 
   if (keymapNode) {
     for (const child of keymapNode.children) {
-      const name = child.label || child.name;
+      const displayNameProp = child.getProperty('display-name') || child.getProperty('label');
+      const name = (displayNameProp ? displayNameProp.value.replace(/"/g, '').trim() : null) || child.label || child.name;
       layer_names.push(name);
       const bindingsProp = child.getProperty('bindings');
       const bindingsVal = bindingsProp ? bindingsProp.value : '';

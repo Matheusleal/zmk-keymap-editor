@@ -1,11 +1,88 @@
 import PropTypes from 'prop-types';
 import { useState } from 'react';
+import * as config from '../../config';
+import { parseDtsToKeymap } from '../../parsers/keymapParser';
 
 export default function WebFsPicker({ onSelect }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const isSupported = typeof window !== 'undefined' && 'showDirectoryPicker' in window;
+
+  async function scanDirectoryEntries(dirHandle) {
+    let keymapContent = null;
+    let keymapFileName = null;
+    let layoutData = null;
+
+    async function checkFile(fileHandle) {
+      if (fileHandle.name.endsWith('.keymap') && !keymapContent) {
+        const file = await fileHandle.getFile();
+        keymapContent = await file.text();
+        keymapFileName = fileHandle.name;
+      } else if (fileHandle.name.endsWith('.json') && !layoutData) {
+        try {
+          const file = await fileHandle.getFile();
+          const text = await file.text();
+          const parsed = JSON.parse(text);
+          if (parsed.layouts || parsed.layout) {
+            const l = parsed.layouts
+              ? (
+                parsed.layouts.default_layout?.layout ||
+                parsed.layouts.LAYOUT?.layout ||
+                parsed.layouts.default?.layout ||
+                Object.values(parsed.layouts)[0]?.layout
+              )
+              : parsed.layout;
+            if (Array.isArray(l) && l.length > 0) {
+              layoutData = l;
+            }
+          }
+        } catch (e) {
+          // ignore non-layout json
+        }
+      }
+    }
+
+    // 1. Scan root
+    for await (const entry of dirHandle.values()) {
+      if (entry.kind === 'file') {
+        await checkFile(entry);
+      }
+    }
+
+    // 2. Scan config/ folder
+    try {
+      const configDir = await dirHandle.getDirectoryHandle('config');
+      for await (const entry of configDir.values()) {
+        if (entry.kind === 'file') {
+          await checkFile(entry);
+        }
+      }
+    } catch (e) {
+      // config/ directory not present
+    }
+
+    // 3. Scan boards/ folder if layoutData still not found
+    if (!layoutData) {
+      try {
+        const boardsDir = await dirHandle.getDirectoryHandle('boards');
+        async function scanSubDir(subHandle) {
+          for await (const entry of subHandle.values()) {
+            if (entry.kind === 'file') {
+              await checkFile(entry);
+            } else if (entry.kind === 'directory' && !layoutData) {
+              await scanSubDir(entry);
+            }
+          }
+        }
+        await scanSubDir(boardsDir);
+      } catch (e) {
+        // boards/ directory not present
+      }
+    }
+
+    return { keymapContent, keymapFileName, layoutData };
+  }
 
   async function handleOpenDirectory() {
     if (!isSupported) {
@@ -18,59 +95,44 @@ export default function WebFsPicker({ onSelect }) {
       setError(null);
       const dirHandle = await window.showDirectoryPicker();
 
-      let keymapContent = null;
-      let keymapFileName = null;
-      let layoutData = null;
-
-      // Scan directory entries
-      for await (const entry of dirHandle.values()) {
-        if (entry.kind === 'file') {
-          if (entry.name.endsWith('.keymap')) {
-            const file = await entry.getFile();
-            keymapContent = await file.text();
-            keymapFileName = entry.name;
-          } else if (entry.name === 'info.json' || entry.name.endsWith('.json')) {
-            try {
-              const file = await entry.getFile();
-              const text = await file.text();
-              const parsed = JSON.parse(text);
-              if (parsed.layouts || parsed.layout) {
-                layoutData = parsed.layouts ? Object.values(parsed.layouts)[0]?.layout : parsed.layout;
-              }
-            } catch (e) {
-              // Ignore non-layout JSON files
-            }
-          }
-        } else if (entry.kind === 'directory' && entry.name === 'config') {
-          // Check inside config/ subfolder
-          for await (const subEntry of entry.values()) {
-            if (subEntry.kind === 'file' && subEntry.name.endsWith('.keymap')) {
-              const file = await subEntry.getFile();
-              keymapContent = await file.text();
-              keymapFileName = subEntry.name;
-            }
-          }
-        }
-      }
+      const { keymapContent, keymapFileName, layoutData } = await scanDirectoryEntries(dirHandle);
 
       if (!keymapContent) {
         throw new Error('No .keymap file found in the selected folder or config/ subfolder.');
       }
 
-      // Default grid layout fallback if info.json is absent
-      const layout = layoutData || [
-        { x: 0, y: 0 }, { x: 1, y: 0 }, { x: 2, y: 0 }, { x: 3, y: 0 },
-        { x: 0, y: 1 }, { x: 1, y: 1 }, { x: 2, y: 1 }, { x: 3, y: 1 }
-      ];
+      // Try server parse-keymap API first, fallback to client-side parser
+      let parsedKeymap = null;
+      try {
+        const res = await fetch(`${config.apiBaseUrl}/parse-keymap`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ dts: keymapContent })
+        });
+        if (res.ok) {
+          parsedKeymap = await res.json();
+        }
+      } catch (err) {
+        console.warn('Backend parse-keymap unavailable, using client-side parser', err);
+      }
+
+      if (!parsedKeymap) {
+        parsedKeymap = parseDtsToKeymap(keymapContent);
+      }
+
+      // Fallback layout if no layout json exists
+      const keyCount = (parsedKeymap.layers?.[0] || []).length || 64;
+      const layout = layoutData || Array.from({ length: keyCount }, (_, i) => ({
+        x: i % 12,
+        y: Math.floor(i / 12)
+      }));
 
       const keymap = {
         name: keymapFileName.replace('.keymap', ''),
-        layer_names: ['Base'],
-        layers: [
-          [{ value: '&kp', params: [{ value: 'A', params: [] }] }]
-        ],
+        ...parsedKeymap,
         _rawDts: keymapContent,
-        _dirHandle: dirHandle
+        _dirHandle: dirHandle,
+        _keymapFileName: keymapFileName
       };
 
       onSelect({
@@ -99,16 +161,21 @@ export default function WebFsPicker({ onSelect }) {
           color: '#ffffff',
           border: 'none',
           padding: '8px 16px',
-          borderRadius: '4px',
-          cursor: 'pointer',
-          fontWeight: '500'
+          borderRadius: '6px',
+          cursor: loading ? 'not-allowed' : 'pointer',
+          fontWeight: 500,
+          fontSize: '0.9rem'
         }}
       >
-        {loading ? 'Reading Folder...' : 'Open Local Folder (Browser)'}
+        {loading ? 'Opening Folder...' : 'Open Local Folder'}
       </button>
 
       {error && (
-        <div style={{ color: '#ef4444', fontSize: '0.85rem', marginTop: '6px' }}>
+        <div style={{
+          marginTop: '8px',
+          color: '#ef4444',
+          fontSize: '0.85rem'
+        }}>
           {error}
         </div>
       )}

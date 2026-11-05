@@ -11,6 +11,7 @@ Branch: `feature/planejamento-melhorias-zmk`
 - 54 testes unitários e de integração passando em `npm test`.
 - Build de produção React (`npm --prefix app run build`) 100% íntegro.
 - Pull Request criado com autorização explícita: #1 em `Matheusleal/zmk-keymap-editor` (feature/planejamento-melhorias-zmk -> main).
+- **Compatibilidade Real ZMK**: Suporte completo a repositórios no formato oficial ZMK (como zmk-sofle) com descoberta automática de layout em `config/*.json` e parsing de `.keymap` DTS tanto via WebFs quanto servidor local. 57 testes passando.
 - **Regra de Segurança de Dependências**: Obrigatória checagem de vulnerabilidades (`npm audit`, GitHub Advisory, CVEs) antes de instalar ou atualizar pacotes, mantendo aprovação prévia do usuário.
 
 ## 2. Entregáveis do Projeto

@@ -55,7 +55,7 @@ export function hydrateTree(value, params, sources) {
   const bind = value
   const behaviour = get(sources.behaviours, bind)
   const behaviourParams = getBehaviourParams(params, behaviour)
-  const commands = keyBy(behaviour.commands, 'code')
+  const commands = keyBy(behaviour?.commands || [], 'code')
 
   function getSourceValue(value, as) {
     if (as === 'command') return commands[value]
@@ -74,16 +74,17 @@ export function hydrateTree(value, params, sources) {
       value,
       source,
       params: get(source, 'params', []).map((as, i) => (
-        hydrateNode(params[i], as)
+        hydrateNode(params ? params[i] : undefined, as)
       ))
     }
   }
 
+  const safeParams = Array.isArray(params) ? params : []
   return {
     value,
     source: behaviour,
     params: behaviourParams.map((as, i) => (
-      hydrateNode(params[i], as)
+      hydrateNode(safeParams[i], as)
     ))
   }
 }

@@ -1,6 +1,9 @@
 const {
   parseKeyBinding,
-  generateKeymap
+  generateKeymap,
+  parseKeymap,
+  loadKeymapFromDts,
+  updateKeymapDts
 } = require('./keymap')
 
 const {
@@ -18,6 +21,9 @@ const {
 module.exports = {
   parseKeyBinding,
   generateKeymap,
+  parseKeymap,
+  loadKeymapFromDts,
+  updateKeymapDts,
   loadBehaviors,
   loadKeycodes,
   loadLayout,

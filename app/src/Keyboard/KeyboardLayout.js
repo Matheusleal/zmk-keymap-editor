@@ -16,12 +16,21 @@ const size = key => {
 
 function KeyboardLayout(props) {
   const { layout, bindings, onUpdate } = props
-  const normalized = layout.map((_, i) => (
-    bindings[i] || {
+  const safeBindings = Array.isArray(bindings) ? bindings : []
+  const normalized = layout.map((_, i) => {
+    const raw = safeBindings[i]
+    if (typeof raw === 'string') {
+      const match = raw.match(/^(&[a-zA-Z0-9_]+)\b/)
+      const value = match ? match[1] : raw
+      const paramStr = raw.substring(value.length).trim()
+      const params = paramStr ? paramStr.split(/\s+/).map(p => ({ value: p, params: [] })) : []
+      return { value, params }
+    }
+    return raw || {
       value: '&none',
       params: []
     }
-  ))
+  })
 
   const handleUpdateBind = useMemo(() => function(keyIndex, updateBinding) {
     onUpdate([

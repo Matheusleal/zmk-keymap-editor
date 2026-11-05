@@ -4,13 +4,15 @@ const DEFAULT_SIZE = 65;
 const DEFAULT_PADDING = 5;
 
 export function getComputedParams (position, size, rotation = {}) {
+  const rotX = rotation.x !== undefined ? rotation.x : position.x
+  const rotY = rotation.y !== undefined ? rotation.y : position.y
   return {
     x: position.x * (DEFAULT_SIZE + DEFAULT_PADDING),
     y: position.y * (DEFAULT_SIZE + DEFAULT_PADDING),
     u: size.u * DEFAULT_SIZE + DEFAULT_PADDING * (size.u - 1),
     h: size.h * DEFAULT_SIZE + DEFAULT_PADDING * (size.h - 1),
-    rx: (position.x - (rotation.x || position.x)) * -(DEFAULT_SIZE + DEFAULT_PADDING),
-    ry: (position.y - (rotation.y || position.y)) * -(DEFAULT_SIZE + DEFAULT_PADDING),
+    rx: (position.x - rotX) * -(DEFAULT_SIZE + DEFAULT_PADDING),
+    ry: (position.y - rotY) * -(DEFAULT_SIZE + DEFAULT_PADDING),
     a: rotation.a || 0
   }
 }
