@@ -60,7 +60,15 @@ function getBehavioursUsed(keymap) {
     return c.bindings ? c.bindings.value : null
   }).filter(Boolean)
 
-  return uniq([...layerBinds, ...comboBinds])
+  const macroBinds = flatten((keymap.macros || []).map(m => {
+    return (m.bindings || []).flatMap(step => {
+      const str = typeof step === 'string' ? step : (step.binding || '')
+      const matches = str.match(/&[a-zA-Z0-9_]+/g) || []
+      return matches
+    })
+  })).filter(Boolean)
+
+  return uniq([...layerBinds, ...comboBinds, ...macroBinds])
 }
 
 /**
@@ -146,6 +154,53 @@ ${renderedNodes}
     };\n\n`
 }
 
+function renderMacroStep(step) {
+  if (typeof step === 'string') {
+    const trimmed = step.trim()
+    if (trimmed.startsWith('&macro_') || trimmed.startsWith('&')) {
+      return trimmed
+    }
+    return `&macro_tap ${trimmed}`
+  }
+  if (!step || typeof step !== 'object') return '&macro_tap &none'
+
+  const { action, binding, value } = step
+  if (action === 'wait_time') return `&macro_wait_time ${value || 50}`
+  if (action === 'press') return `&macro_press ${binding}`
+  if (action === 'release') return `&macro_release ${binding}`
+  if (action === 'pause_for_release') return '&macro_pause_for_release'
+  return `&macro_tap ${binding || value || '&none'}`
+}
+
+function renderMacros(macros) {
+  if (!macros || !Array.isArray(macros) || macros.length === 0) {
+    return ''
+  }
+
+  const renderedNodes = macros.map((macro, idx) => {
+    const rawName = macro.name || `macro_${idx}`
+    const nodeName = sanitizeDtsIdentifier(rawName)
+    const wait = (macro.wait_ms !== undefined) ? `\n            wait-ms = <${macro.wait_ms}>;` : ''
+    const tap = (macro.tap_ms !== undefined) ? `\n            tap-ms = <${macro.tap_ms}>;` : ''
+    const bindingsList = (macro.bindings || []).map(renderMacroStep)
+    const bindingsDts = bindingsList.length > 0
+      ? bindingsList.map((b, i) => `${i === 0 ? '=' : ','} <${b}>`).join('\n                ')
+      : '= <&none>'
+
+    return `        ${nodeName}: ${nodeName} {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;${wait}${tap}
+            bindings
+                ${bindingsDts}
+                ;
+        };`
+  }).join('\n\n')
+
+  return `    macros {
+${renderedNodes}
+    };\n\n`
+}
+
 function generateKeymap (layout, keymap, template) {
   const encoded = encodeKeymap(keymap)
   return {
@@ -179,6 +234,7 @@ ${rendered}
   })
 
   const renderedCombos = renderCombos(params.combos)
+  const renderedMacros = renderMacros(params.macros)
 
   let rendered = template
     .replace(includesPattern, params.behaviourHeaders.join('\n'))
@@ -190,8 +246,13 @@ ${rendered}
     rendered = rendered.replace(/(keymap\s*\{)/, `${renderedCombos}$1`)
   }
 
+  if (macrosPattern.test(rendered)) {
+    rendered = rendered.replace(macrosPattern, renderedMacros)
+  } else if (renderedMacros) {
+    rendered = rendered.replace(/(keymap\s*\{)/, `${renderedMacros}$1`)
+  }
+
   rendered = rendered
-    .replace(macrosPattern, '')
     .replace(conditionalLayersPattern, '')
     .replace(behaviorsPattern, '')
 
@@ -209,6 +270,7 @@ function generateKeymapCode (layout, keymap, encoded, template) {
     behaviourHeaders,
     layers: encoded.layers,
     combos: encoded.combos || keymap.combos,
+    macros: encoded.macros || keymap.macros,
     layerNames: names
   })
 }
@@ -273,6 +335,25 @@ function validateKeymapJson(keymap) {
             }
             if (!c.bindings) {
               errors.push(`Combo at combos[${idx}] must specify "bindings"`)
+            }
+          }
+        })
+      }
+    }
+
+    if (keymap.macros !== undefined) {
+      if (!Array.isArray(keymap.macros)) {
+        errors.push('"macros" must be an array')
+      } else {
+        keymap.macros.forEach((m, idx) => {
+          if (!m || typeof m !== 'object') {
+            errors.push(`Macro at macros[${idx}] must be an object`)
+          } else {
+            if (!m.name) {
+              errors.push(`Macro at macros[${idx}] must have a "name"`)
+            }
+            if (!Array.isArray(m.bindings) || m.bindings.length === 0) {
+              errors.push(`Macro at macros[${idx}] must have a non-empty "bindings" array`)
             }
           }
         })

@@ -84,7 +84,7 @@ Related Requirements: FR-007, DES-003
 Done When: Teste unitário valida a geração de nós Devicetree válidos para macros de múltiplos passos e delays.
 Recommended Agent: self
 Dependencies: TASK-005
-Status: Pending
+Status: Done
 
 TASK-008
 Title: Sequenciador visual de Macros no Frontend
