@@ -9,7 +9,13 @@ const keyboards = require('./routes/keyboards')
 
 const app = express()
 
-const { origin } = new URL(config.APP_BASE_URL)
+const appUrl = config.APP_BASE_URL || 'http://localhost:3000'
+let origin = 'http://localhost:3000'
+try {
+  origin = new URL(appUrl).origin
+} catch (e) {
+  origin = 'http://localhost:3000'
+}
 
 app.use(bodyParser.json())
 app.use(cors({ origin }))
