@@ -201,6 +201,29 @@ ${renderedNodes}
     };\n\n`
 }
 
+function renderConditionalLayers(conditionalLayers) {
+  if (!conditionalLayers || !Array.isArray(conditionalLayers) || conditionalLayers.length === 0) {
+    return ''
+  }
+
+  const renderedNodes = conditionalLayers.map((rule, idx) => {
+    const rawName = rule.name || `tri_layer_${idx}`
+    const nodeName = sanitizeDtsIdentifier(rawName)
+    const ifLayers = (rule.if_layers || rule['if-layers'] || []).join(' ')
+    const thenLayer = rule.then_layer !== undefined ? rule.then_layer : rule['then-layer']
+
+    return `        ${nodeName} {
+            if-layers = <${ifLayers}>;
+            then-layer = <${thenLayer}>;
+        };`
+  }).join('\n\n')
+
+  return `    conditional_layers {
+        compatible = "zmk,conditional-layers";
+${renderedNodes}
+    };\n\n`
+}
+
 function generateKeymap (layout, keymap, template) {
   const encoded = encodeKeymap(keymap)
   return {
@@ -235,6 +258,7 @@ ${rendered}
 
   const renderedCombos = renderCombos(params.combos)
   const renderedMacros = renderMacros(params.macros)
+  const renderedConditionalLayers = renderConditionalLayers(params.conditional_layers || params.conditionalLayers)
 
   let rendered = template
     .replace(includesPattern, params.behaviourHeaders.join('\n'))
@@ -252,9 +276,13 @@ ${rendered}
     rendered = rendered.replace(/(keymap\s*\{)/, `${renderedMacros}$1`)
   }
 
-  rendered = rendered
-    .replace(conditionalLayersPattern, '')
-    .replace(behaviorsPattern, '')
+  if (conditionalLayersPattern.test(rendered)) {
+    rendered = rendered.replace(conditionalLayersPattern, renderedConditionalLayers)
+  } else if (renderedConditionalLayers) {
+    rendered = rendered.replace(/(keymap\s*\{)/, `${renderedConditionalLayers}$1`)
+  }
+
+  rendered = rendered.replace(behaviorsPattern, '')
 
   return rendered
 }
@@ -271,6 +299,7 @@ function generateKeymapCode (layout, keymap, encoded, template) {
     layers: encoded.layers,
     combos: encoded.combos || keymap.combos,
     macros: encoded.macros || keymap.macros,
+    conditional_layers: encoded.conditional_layers || keymap.conditional_layers || keymap.conditionalLayers,
     layerNames: names
   })
 }
@@ -354,6 +383,28 @@ function validateKeymapJson(keymap) {
             }
             if (!Array.isArray(m.bindings) || m.bindings.length === 0) {
               errors.push(`Macro at macros[${idx}] must have a non-empty "bindings" array`)
+            }
+          }
+        })
+      }
+    }
+
+    if (keymap.conditional_layers !== undefined || keymap.conditionalLayers !== undefined) {
+      const cls = keymap.conditional_layers || keymap.conditionalLayers
+      if (!Array.isArray(cls)) {
+        errors.push('"conditional_layers" must be an array')
+      } else {
+        cls.forEach((cl, idx) => {
+          if (!cl || typeof cl !== 'object') {
+            errors.push(`Conditional layer at [${idx}] must be an object`)
+          } else {
+            const ifLayers = cl.if_layers || cl['if-layers']
+            const thenLayer = cl.then_layer !== undefined ? cl.then_layer : cl['then-layer']
+            if (!Array.isArray(ifLayers) || ifLayers.length < 2) {
+              errors.push(`Conditional layer at [${idx}] must have an "if_layers" array with at least 2 layers`)
+            }
+            if (thenLayer === undefined || typeof thenLayer !== 'number') {
+              errors.push(`Conditional layer at [${idx}] must specify numeric "then_layer"`)
             }
           }
         })

@@ -104,7 +104,7 @@ Related Requirements: FR-008, DES-004
 Done When: O usuário configura visualmente Se Camada 1 E Camada 2, então Camada 3 e o bloco conditional_layers é gerado no .keymap.
 Recommended Agent: self
 Dependencies: TASK-006
-Status: Pending
+Status: Done
 
 TASK-010
 Title: Editor de Custom Behaviors (Hold-Tap para Home Row Mods)

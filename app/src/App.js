@@ -15,6 +15,7 @@ import Loader from './Common/Loader'
 import github from './Pickers/Github/api'
 import ComboManager from './Combos/ComboManager'
 import MacroEditor from './Macros/MacroEditor'
+import ConditionalLayersModal from './ConditionalLayers/ConditionalLayersModal'
 
 function App() {
   const [definitions, setDefinitions] = useState(null)
@@ -26,6 +27,7 @@ function App() {
   const [saving, setSaving] = useState(false)
   const [showCombos, setShowCombos] = useState(false)
   const [showMacros, setShowMacros] = useState(false)
+  const [showConditionalLayers, setShowConditionalLayers] = useState(false)
 
   function handleCompile() {
     fetch(`${config.apiBaseUrl}/keymap`, {
@@ -110,6 +112,12 @@ function App() {
               >
                 Macros
               </button>
+              <button
+                title="Manage Conditional Layers (Tri-Layer)"
+                onClick={() => setShowConditionalLayers(true)}
+              >
+                Conditional Layers
+              </button>
             </>
           )}
           {source === 'local' && (
@@ -149,6 +157,13 @@ function App() {
             keymap={editingKeymap || keymap}
             onUpdate={handleUpdateKeymap}
             onClose={() => setShowMacros(false)}
+          />
+        )}
+        {showConditionalLayers && (
+          <ConditionalLayersModal
+            keymap={editingKeymap || keymap}
+            onUpdate={handleUpdateKeymap}
+            onClose={() => setShowConditionalLayers(false)}
           />
         )}
       </Loader>
