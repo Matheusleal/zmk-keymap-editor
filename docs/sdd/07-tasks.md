@@ -164,9 +164,13 @@ Related Requirements: FR-012, DES-007
 Done When: No Google Chrome/Edge, o usuário clica em Abrir Pasta Local, seleciona a pasta de configuração do ZMK e edita o keymap sem necessidade do backend Express ativo.
 Recommended Agent: self
 Dependencies: TASK-013
-Status: Pending
+Status: Done
 
-<!-- Registro do gate M3 (data) — veredito do sdd-validator -->
+### Registro do Gate M3 (2026-11-05) — Veredito: Aprovado
+- **Escopo**: TASK-011 a TASK-014 (FR-010, FR-011, FR-012, NFR-001, DES-006, DES-007).
+- **Evidências**: 38 testes unitários passando em `api/tests/` (dts-parser, dts-serializer, ast-integration, combos, macros, etc.) e build limpo do React com WebFsPicker.
+- **Dívidas**: Nenhuma dívida aberta.
+- **Veredito**: APROVADO.
 
 ---
 

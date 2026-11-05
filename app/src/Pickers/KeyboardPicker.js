@@ -7,9 +7,13 @@ import { loadLayout } from '../layout.js'
 import { loadKeymap } from '../keymap.js'
 import Selector from "../Common/Selector"
 import GithubPicker from './Github/Picker'
+import WebFsPicker from './WebFs/WebFsPicker'
+
+const isWebFsSupported = typeof window !== 'undefined' && 'showDirectoryPicker' in window
 
 const sourceChoices = compact([
-  config.enableLocal ? { id: 'local', name: 'Local' } : null,
+  config.enableLocal ? { id: 'local', name: 'Local (Server)' } : null,
+  isWebFsSupported ? { id: 'webfs', name: 'Local Folder (Browser)' } : null,
   config.enableGitHub ? { id: 'github', name: 'GitHub' } : null
 ])
 
@@ -64,6 +68,10 @@ function KeyboardPicker(props) {
           onSelect(value)
         }}
       />
+
+      {source === 'webfs' && (
+        <WebFsPicker onSelect={handleKeyboardSelected} />
+      )}
 
       {source === 'github' && (
         <GithubPicker onSelect={handleKeyboardSelected} />

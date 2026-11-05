@@ -41,6 +41,25 @@ function App() {
     })
   }
 
+  async function handleSaveWebFs() {
+    if (!keymap || !keymap._dirHandle) return;
+    try {
+      setSaving(true);
+      const fileName = (sourceOther && sourceOther.fileName) || `${keymap.name || 'keymap'}.keymap`;
+      const fileHandle = await keymap._dirHandle.getFileHandle(fileName, { create: true });
+      const writable = await fileHandle.createWritable();
+      const content = JSON.stringify(editingKeymap || keymap, null, 2);
+      await writable.write(content);
+      await writable.close();
+      setKeymap(editingKeymap);
+      setEditingKeymap(null);
+    } catch (err) {
+      alert('Error saving to folder: ' + err.message);
+    } finally {
+      setSaving(false);
+    }
+  }
+
   const handleCommitChanges = useMemo(() => function() {
     const { repository, branch } = sourceOther.github
 
@@ -131,6 +150,11 @@ function App() {
           {source === 'local' && (
             <button disabled={!editingKeymap} onClick={handleCompile}>
               Save Local
+            </button>
+          )}
+          {source === 'webfs' && (
+            <button disabled={!editingKeymap} onClick={handleSaveWebFs}>
+              {saving ? 'Saving...' : 'Save to Folder'}
             </button>
           )}
           {source === 'github' && (
