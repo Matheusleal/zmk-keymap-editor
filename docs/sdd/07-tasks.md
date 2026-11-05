@@ -114,9 +114,13 @@ Related Requirements: FR-009, DES-005
 Done When: Usuário define um hold-tap posicional para home-row mods, clica nas teclas da mão oposta para definir os gatilhos e aplica o novo comportamento nas teclas de repouso.
 Recommended Agent: self
 Dependencies: TASK-006
-Status: Pending
+Status: Done
 
-<!-- Registro do gate M2 (data) — veredito do sdd-validator -->
+### Registro do Gate M2 (2026-11-05) — Veredito: Aprovado
+- **Escopo**: TASK-005 a TASK-010 (FR-006, FR-007, FR-008, FR-009, DES-002, DES-003, DES-004, DES-005).
+- **Evidências**: 28 testes unitários passando em `api/tests/` (combos, macros, conditional-layers, custom-behaviors, etc.) e build de produção do React sem erros.
+- **Dívidas**: Nenhuma dívida aberta.
+- **Veredito**: APROVADO.
 
 ---
 

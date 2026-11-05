@@ -16,6 +16,7 @@ import github from './Pickers/Github/api'
 import ComboManager from './Combos/ComboManager'
 import MacroEditor from './Macros/MacroEditor'
 import ConditionalLayersModal from './ConditionalLayers/ConditionalLayersModal'
+import CustomBehaviorModal from './CustomBehaviors/CustomBehaviorModal'
 
 function App() {
   const [definitions, setDefinitions] = useState(null)
@@ -28,6 +29,7 @@ function App() {
   const [showCombos, setShowCombos] = useState(false)
   const [showMacros, setShowMacros] = useState(false)
   const [showConditionalLayers, setShowConditionalLayers] = useState(false)
+  const [showBehaviors, setShowBehaviors] = useState(false)
 
   function handleCompile() {
     fetch(`${config.apiBaseUrl}/keymap`, {
@@ -118,6 +120,12 @@ function App() {
               >
                 Conditional Layers
               </button>
+              <button
+                title="Manage Custom Behaviors (Hold-Tap)"
+                onClick={() => setShowBehaviors(true)}
+              >
+                Custom Behaviors
+              </button>
             </>
           )}
           {source === 'local' && (
@@ -164,6 +172,13 @@ function App() {
             keymap={editingKeymap || keymap}
             onUpdate={handleUpdateKeymap}
             onClose={() => setShowConditionalLayers(false)}
+          />
+        )}
+        {showBehaviors && (
+          <CustomBehaviorModal
+            keymap={editingKeymap || keymap}
+            onUpdate={handleUpdateKeymap}
+            onClose={() => setShowBehaviors(false)}
           />
         )}
       </Loader>

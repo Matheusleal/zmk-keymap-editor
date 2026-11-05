@@ -224,6 +224,50 @@ ${renderedNodes}
     };\n\n`
 }
 
+function renderBehaviors(behaviors) {
+  if (!behaviors || !Array.isArray(behaviors) || behaviors.length === 0) {
+    return ''
+  }
+
+  const renderedNodes = behaviors.map((b, idx) => {
+    const rawName = b.name || `custom_behavior_${idx}`
+    const nodeName = sanitizeDtsIdentifier(rawName)
+    const code = (b.code || `&${nodeName}`).replace(/^&/, '')
+    const label = `${code}: ${nodeName}`
+    const type = b.type || 'hold-tap'
+    const compatible = type === 'hold-tap' ? 'zmk,behavior-hold-tap' : `zmk,behavior-${type}`
+    const cells = b.binding_cells !== undefined ? b.binding_cells : 2
+    const flavor = b.flavor ? `\n            flavor = "${b.flavor}";` : ''
+    const tappingTerm = (b.tapping_term_ms !== undefined || b['tapping-term-ms'] !== undefined)
+      ? `\n            tapping-term-ms = <${b.tapping_term_ms || b['tapping-term-ms']}>;`
+      : ''
+    const quickTap = (b.quick_tap_ms !== undefined || b['quick-tap-ms'] !== undefined)
+      ? `\n            quick-tap-ms = <${b.quick_tap_ms || b['quick-tap-ms']}>;`
+      : ''
+    const priorIdle = (b.require_prior_idle_ms !== undefined || b['require-prior-idle-ms'] !== undefined)
+      ? `\n            require-prior-idle-ms = <${b.require_prior_idle_ms || b['require-prior-idle-ms']}>;`
+      : ''
+    const bindingsList = Array.isArray(b.bindings) ? b.bindings.map(x => `<${x}>`).join(', ') : '<&kp>, <&kp>'
+    const positions = (b.hold_trigger_key_positions || b['hold-trigger-key-positions'] || [])
+    const holdTrigger = positions.length > 0
+      ? `\n            hold-trigger-key-positions = <${positions.join(' ')}>;`
+      : ''
+    const onRelease = (b.hold_trigger_on_release || b['hold-trigger-on-release'])
+      ? '\n            hold-trigger-on-release;'
+      : ''
+
+    return `        ${label} {
+            compatible = "${compatible}";
+            #binding-cells = <${cells}>;${flavor}${tappingTerm}${quickTap}${priorIdle}
+            bindings = ${bindingsList};${holdTrigger}${onRelease}
+        };`
+  }).join('\n\n')
+
+  return `    behaviors {
+${renderedNodes}
+    };\n\n`
+}
+
 function generateKeymap (layout, keymap, template) {
   const encoded = encodeKeymap(keymap)
   return {
@@ -259,6 +303,7 @@ ${rendered}
   const renderedCombos = renderCombos(params.combos)
   const renderedMacros = renderMacros(params.macros)
   const renderedConditionalLayers = renderConditionalLayers(params.conditional_layers || params.conditionalLayers)
+  const renderedBehaviors = renderBehaviors(params.behaviors || params.custom_behaviors || params.customBehaviors)
 
   let rendered = template
     .replace(includesPattern, params.behaviourHeaders.join('\n'))
@@ -282,7 +327,11 @@ ${rendered}
     rendered = rendered.replace(/(keymap\s*\{)/, `${renderedConditionalLayers}$1`)
   }
 
-  rendered = rendered.replace(behaviorsPattern, '')
+  if (behaviorsPattern.test(rendered)) {
+    rendered = rendered.replace(behaviorsPattern, renderedBehaviors)
+  } else if (renderedBehaviors) {
+    rendered = rendered.replace(/(keymap\s*\{)/, `${renderedBehaviors}$1`)
+  }
 
   return rendered
 }
@@ -300,6 +349,7 @@ function generateKeymapCode (layout, keymap, encoded, template) {
     combos: encoded.combos || keymap.combos,
     macros: encoded.macros || keymap.macros,
     conditional_layers: encoded.conditional_layers || keymap.conditional_layers || keymap.conditionalLayers,
+    behaviors: encoded.behaviors || keymap.behaviors || keymap.custom_behaviors || keymap.customBehaviors,
     layerNames: names
   })
 }
@@ -405,6 +455,23 @@ function validateKeymapJson(keymap) {
             }
             if (thenLayer === undefined || typeof thenLayer !== 'number') {
               errors.push(`Conditional layer at [${idx}] must specify numeric "then_layer"`)
+            }
+          }
+        })
+      }
+    }
+
+    if (keymap.behaviors !== undefined || keymap.custom_behaviors !== undefined) {
+      const bhs = keymap.behaviors || keymap.custom_behaviors
+      if (!Array.isArray(bhs)) {
+        errors.push('"behaviors" must be an array')
+      } else {
+        bhs.forEach((b, idx) => {
+          if (!b || typeof b !== 'object') {
+            errors.push(`Behavior at [${idx}] must be an object`)
+          } else {
+            if (!b.name) {
+              errors.push(`Behavior at [${idx}] must have a "name"`)
             }
           }
         })
