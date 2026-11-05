@@ -94,7 +94,7 @@ Related Requirements: FR-007, DES-003
 Done When: Usuário adiciona passos à macro via UI, altera a ordem dos passos e atribui a macro a qualquer tecla no layout.
 Recommended Agent: self
 Dependencies: TASK-007
-Status: Pending
+Status: Done
 
 TASK-009
 Title: Suporte a Camadas Condicionais (Tri-Layer / Conditional Layers)

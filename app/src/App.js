@@ -14,6 +14,7 @@ import GitHubLink from './GitHubLink'
 import Loader from './Common/Loader'
 import github from './Pickers/Github/api'
 import ComboManager from './Combos/ComboManager'
+import MacroEditor from './Macros/MacroEditor'
 
 function App() {
   const [definitions, setDefinitions] = useState(null)
@@ -24,6 +25,7 @@ function App() {
   const [editingKeymap, setEditingKeymap] = useState(null)
   const [saving, setSaving] = useState(false)
   const [showCombos, setShowCombos] = useState(false)
+  const [showMacros, setShowMacros] = useState(false)
 
   function handleCompile() {
     fetch(`${config.apiBaseUrl}/keymap`, {
@@ -95,12 +97,20 @@ function App() {
         <KeyboardPicker onSelect={handleKeyboardSelected} />
         <div id="actions">
           {keymap && (
-            <button
-              title="Manage ZMK Combos"
-              onClick={() => setShowCombos(true)}
-            >
-              Combos
-            </button>
+            <>
+              <button
+                title="Manage ZMK Combos"
+                onClick={() => setShowCombos(true)}
+              >
+                Combos
+              </button>
+              <button
+                title="Manage ZMK Macros"
+                onClick={() => setShowMacros(true)}
+              >
+                Macros
+              </button>
+            </>
           )}
           {source === 'local' && (
             <button disabled={!editingKeymap} onClick={handleCompile}>
@@ -132,6 +142,13 @@ function App() {
             keymap={editingKeymap || keymap}
             onUpdate={handleUpdateKeymap}
             onClose={() => setShowCombos(false)}
+          />
+        )}
+        {showMacros && (
+          <MacroEditor
+            keymap={editingKeymap || keymap}
+            onUpdate={handleUpdateKeymap}
+            onClose={() => setShowMacros(false)}
           />
         )}
       </Loader>
