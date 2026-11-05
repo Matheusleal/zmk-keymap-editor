@@ -134,7 +134,7 @@ Related Requirements: FR-010, NFR-001, DES-006
 Done When: Suíte de testes unitários com keymaps complexos contendo comentários e nós desconhecidos preserva 100% da integridade estrutural.
 Recommended Agent: self
 Dependencies: TASK-010
-Status: Pending
+Status: Done
 
 TASK-012
 Title: Serializer de AST de Devicetree com Edição Não-Destrutiva
