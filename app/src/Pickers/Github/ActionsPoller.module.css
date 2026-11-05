@@ -1,0 +1,202 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 600px;
+  padding: 24px;
+  color: #f8fafc;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #334155;
+  padding-bottom: 12px;
+  margin-bottom: 20px;
+}
+
+.header h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #38bdf8;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 4px;
+  line-height: 1;
+}
+
+.closeButton:hover {
+  color: #f1f5f9;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.repoInfo {
+  font-size: 0.9rem;
+  color: #94a3b8;
+}
+
+.statusCard {
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.statusHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.runName {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.badge {
+  font-size: 0.75rem;
+  padding: 3px 8px;
+  border-radius: 9999px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.badgeSuccess {
+  background: #14532d;
+  color: #4ade80;
+  border: 1px solid #16a34a;
+}
+
+.badgeProgress {
+  background: #1e3a8a;
+  color: #60a5fa;
+  border: 1px solid #2563eb;
+}
+
+.badgeFailure {
+  background: #7f1d1d;
+  color: #f87171;
+  border: 1px solid #dc2626;
+}
+
+.badgeQueued {
+  background: #713f12;
+  color: #fde047;
+  border: 1px solid #ca8a04;
+}
+
+.metaText {
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+.artifactsSection {
+  margin-top: 8px;
+  border-top: 1px solid #334155;
+  padding-top: 12px;
+}
+
+.artifactsSection h4 {
+  margin: 0 0 10px 0;
+  font-size: 0.9rem;
+  color: #cbd5e1;
+}
+
+.artifactList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.artifactItem {
+  background: #1e293b;
+  border: 1px solid #475569;
+  border-radius: 6px;
+  padding: 10px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.artifactName {
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.downloadLink {
+  background: #0284c7;
+  color: #ffffff;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: none;
+  cursor: pointer;
+}
+
+.downloadLink:hover {
+  background: #0369a1;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.refreshButton {
+  background: #334155;
+  color: #f8fafc;
+  border: 1px solid #475569;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.refreshButton:hover {
+  background: #475569;
+}
+
+.emptyState {
+  text-align: center;
+  color: #94a3b8;
+  padding: 24px;
+}

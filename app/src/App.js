@@ -17,6 +17,7 @@ import ComboManager from './Combos/ComboManager'
 import MacroEditor from './Macros/MacroEditor'
 import ConditionalLayersModal from './ConditionalLayers/ConditionalLayersModal'
 import CustomBehaviorModal from './CustomBehaviors/CustomBehaviorModal'
+import ActionsPoller from './Pickers/Github/ActionsPoller'
 
 function App() {
   const [definitions, setDefinitions] = useState(null)
@@ -30,6 +31,7 @@ function App() {
   const [showMacros, setShowMacros] = useState(false)
   const [showConditionalLayers, setShowConditionalLayers] = useState(false)
   const [showBehaviors, setShowBehaviors] = useState(false)
+  const [showActions, setShowActions] = useState(false)
 
   function handleCompile() {
     fetch(`${config.apiBaseUrl}/keymap`, {
@@ -70,6 +72,7 @@ function App() {
 
       setKeymap(editingKeymap)
       setEditingKeymap(null)
+      setShowActions(true)
     })()
   }, [
     layout,
@@ -77,7 +80,8 @@ function App() {
     sourceOther,
     setSaving,
     setKeymap,
-    setEditingKeymap
+    setEditingKeymap,
+    setShowActions
   ])
 
   const handleKeyboardSelected = useMemo(() => function(event) {
@@ -158,14 +162,22 @@ function App() {
             </button>
           )}
           {source === 'github' && (
-            <button
-              title="Commit keymap changes to GitHub repository"
-              disabled={!editingKeymap}
-              onClick={handleCommitChanges}
-            >
-              {saving ? 'Saving' : 'Commit Changes'}
-              {saving && <Spinner />}
-            </button>
+            <>
+              <button
+                title="Commit keymap changes to GitHub repository"
+                disabled={!editingKeymap}
+                onClick={handleCommitChanges}
+              >
+                {saving ? 'Saving' : 'Commit Changes'}
+                {saving && <Spinner />}
+              </button>
+              <button
+                title="Monitor firmware compilation on GitHub Actions and download .uf2"
+                onClick={() => setShowActions(true)}
+              >
+                Firmware Build
+              </button>
+            </>
           )}
         </div>
         <DefinitionsContext.Provider value={definitions}>
@@ -203,6 +215,14 @@ function App() {
             keymap={editingKeymap || keymap}
             onUpdate={handleUpdateKeymap}
             onClose={() => setShowBehaviors(false)}
+          />
+        )}
+        {showActions && sourceOther?.github && (
+          <ActionsPoller
+            repository={sourceOther.github.repository}
+            branch={sourceOther.github.branch}
+            isOpen={showActions}
+            onClose={() => setShowActions(false)}
           />
         )}
       </Loader>

@@ -19,6 +19,11 @@ const {
   commitChanges
 } = require('./files')
 
+const {
+  fetchWorkflowRuns,
+  fetchRunArtifacts
+} = require('./workflows')
+
 module.exports = {
   createOauthFlowUrl,
   createOauthReturnUrl,
@@ -31,5 +36,7 @@ module.exports = {
   fetchRepoBranches,
   InvalidRepoError,
   fetchKeyboardFiles,
-  commitChanges
+  commitChanges,
+  fetchWorkflowRuns,
+  fetchRunArtifacts
 }

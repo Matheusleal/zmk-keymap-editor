@@ -220,7 +220,7 @@ Related Requirements: FR-015, NFR-003, DES-010
 Done When: Após salvar alterações no repositório GitHub, a interface exibe o status da compilação e um botão direto de download do arquivo .uf2 gerado.
 Recommended Agent: self
 Dependencies: TASK-014
-Status: Pending
+Status: Done
 
 TASK-019
 Title: Gerador e Exportador de Diagramas SVG de Keymap (Keymap Drawer Style)

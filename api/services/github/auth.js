@@ -6,9 +6,12 @@ const api = require('./api')
 const config = require('../../config')
 
 const pemPath = path.join(__dirname, '..', '..', '..', 'private-key.pem')
-const privateKey = config.GITHUB_APP_PRIVATE_KEY || fs.readFileSync(pemPath)
+const privateKey = config.GITHUB_APP_PRIVATE_KEY || (fs.existsSync(pemPath) ? fs.readFileSync(pemPath) : null)
 
 function createAppToken () {
+  if (!privateKey) {
+    throw new Error('GitHub App private key not configured (set GITHUB_APP_PRIVATE_KEY or provide private-key.pem)')
+  }
   return  jwt.sign({ iss: config.GITHUB_APP_ID }, privateKey, {
     algorithm: 'RS256',
     expiresIn: '10m'
