@@ -230,6 +230,6 @@ Related Requirements: FR-016
 Done When: O usuário clica em Exportar SVG e obtém um arquivo gráfico vetorial contendo todas as camadas desenhadas com legendas nítidas.
 Recommended Agent: self
 Dependencies: TASK-016
-Status: Pending
+Status: Done
 
-<!-- Registro do gate M5 (data) — veredito do sdd-validator -->
+<!-- Registro do gate M5 (2026-11-05) — veredito: APROVADO. 54 testes unitários passando, build de produção validado sem erros, integração com GitHub Actions e gerador SVG Keymap Drawer concluídos. -->

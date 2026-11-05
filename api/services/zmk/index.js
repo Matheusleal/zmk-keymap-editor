@@ -11,6 +11,10 @@ const {
   exportKeymap
 } = require('./local-source')
 
+const {
+  generateKeymapSvg
+} = require('./export/svgDrawer')
+
 module.exports = {
   parseKeyBinding,
   generateKeymap,
@@ -18,5 +22,6 @@ module.exports = {
   loadKeycodes,
   loadLayout,
   loadKeymap,
-  exportKeymap
+  exportKeymap,
+  generateKeymapSvg
 }

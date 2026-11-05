@@ -18,6 +18,7 @@ import MacroEditor from './Macros/MacroEditor'
 import ConditionalLayersModal from './ConditionalLayers/ConditionalLayersModal'
 import CustomBehaviorModal from './CustomBehaviors/CustomBehaviorModal'
 import ActionsPoller from './Pickers/Github/ActionsPoller'
+import SvgExportModal from './Export/SvgExportModal'
 
 function App() {
   const [definitions, setDefinitions] = useState(null)
@@ -32,6 +33,7 @@ function App() {
   const [showConditionalLayers, setShowConditionalLayers] = useState(false)
   const [showBehaviors, setShowBehaviors] = useState(false)
   const [showActions, setShowActions] = useState(false)
+  const [showExportSvg, setShowExportSvg] = useState(false)
 
   function handleCompile() {
     fetch(`${config.apiBaseUrl}/keymap`, {
@@ -149,6 +151,12 @@ function App() {
               >
                 Custom Behaviors
               </button>
+              <button
+                title="Export visual SVG diagram of all layers and combos"
+                onClick={() => setShowExportSvg(true)}
+              >
+                Export SVG
+              </button>
             </>
           )}
           {source === 'local' && (
@@ -223,6 +231,14 @@ function App() {
             branch={sourceOther.github.branch}
             isOpen={showActions}
             onClose={() => setShowActions(false)}
+          />
+        )}
+        {showExportSvg && layout && (
+          <SvgExportModal
+            layout={layout}
+            keymap={editingKeymap || keymap}
+            isOpen={showExportSvg}
+            onClose={() => setShowExportSvg(false)}
           />
         )}
       </Loader>

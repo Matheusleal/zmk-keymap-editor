@@ -1,19 +1,21 @@
 # 11 — Project Memory (Memória Viva)
 
-Estado atual: Milestone 5 em andamento — TASK-018 Concluída.
+Estado atual: Todos os 5 Milestones (M1 a M5) e 19 tarefas concluídos com sucesso.
 Branch: `feature/planejamento-melhorias-zmk`
 Última Atualização: 2026-11-05
 
 ## 1. Contexto e Decisões Ativas
-- Governança SDD ativa (00 a 10). Mapeadas 19 tarefas em 5 Milestones (M1 a M5).
-- Commits atômicos por task com testes verificados.
-- Milestones M1 a M4 concluídos e aprovados nos gates.
-- `TASK-018` Concluída: Polling de GitHub Actions e download direto de firmware (.uf2/zip).
-- 49 testes unitários passando em `npm test` + build React limpo.
+- Governança SDD concluída integralmente (19 de 19 tarefas finalizadas).
+- Commits atômicos por task com testes unitários e de integração verificados em cada etapa.
+- Todos os Gates (M1, M2, M3, M4, M5) validados e aprovados.
+- 54 testes unitários e de integração passando em `npm test`.
+- Build de produção React (`npm --prefix app run build`) 100% íntegro.
+- `TASK-019`: Concluída (Gerador e exportador de diagramas SVG estilo Keymap Drawer).
+- Nenhum PR aberto, respeitando a instrução explícita do usuário.
 
-## 2. Próximos Passos
-- Iniciar `TASK-019` (Exportador de diagramas SVG de Keymap estilo Keymap Drawer).
-- Concluir Milestone 5 e validar gate final.
-
-## 3. Riscos e Alertas
-- Sem PR automático.
+## 2. Entregáveis do Projeto
+- M1: Metadados ZMK atualizados (&out, &bt BT_CLR_ALL/BT_DISC, &sys_reset, &soft_off, &kt, RGB_COLOR_HSB, keycodes modernos).
+- M2: Funcionalidades centrais ZMK (Combos, Macros timeline, Conditional Layers, Custom Behaviors para Home Row Mods).
+- M3: Motor AST Devicetree não-destrutivo e Web File System Access API para manipulação local direta.
+- M4: Periféricos e Pointing (Rotary Encoders sensor-bindings e mouse keys &mkp, &mmv, &msc).
+- M5: Pipeline de firmware e exportação (GitHub Actions run polling + download .uf2, gerador de diagramas SVG).
