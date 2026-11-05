@@ -294,11 +294,19 @@ function renderTemplate(template, params) {
       columnSeparator: ' '
     })
 
+    const sensorBinding = (params.sensor_bindings && params.sensor_bindings[i])
+      ? (Array.isArray(params.sensor_bindings[i]) ? params.sensor_bindings[i].join(' ') : params.sensor_bindings[i])
+      : null
+
+    const sensorDts = sensorBinding
+      ? `\n            sensor-bindings = <${sensorBinding}>;`
+      : ''
+
     return `
         ${name.replace(/[^a-zA-Z0-9_]/g, '_')} {
             bindings = <
 ${rendered}
-            >;
+            >;${sensorDts}
         };
 `
   })
@@ -353,6 +361,7 @@ function generateKeymapCode (layout, keymap, encoded, template) {
     macros: encoded.macros || keymap.macros,
     conditional_layers: encoded.conditional_layers || keymap.conditional_layers || keymap.conditionalLayers,
     behaviors: encoded.behaviors || keymap.behaviors || keymap.custom_behaviors || keymap.customBehaviors,
+    sensor_bindings: encoded.sensor_bindings || keymap.sensor_bindings || keymap['sensor-bindings'],
     layerNames: names
   })
 }
@@ -512,6 +521,7 @@ function loadKeymapFromDts(dtsContent) {
   const keymapNode = root.getChild('keymap');
   const layers = [];
   const layer_names = [];
+  const sensor_bindings = [];
 
   if (keymapNode) {
     for (const child of keymapNode.children) {
@@ -521,6 +531,10 @@ function loadKeymapFromDts(dtsContent) {
       const bindingsVal = bindingsProp ? bindingsProp.value : '';
       const layerBindings = extractBindingsFromDtsText(bindingsVal);
       layers.push(layerBindings);
+
+      const sensorProp = child.getProperty('sensor-bindings');
+      const sensorVal = sensorProp ? sensorProp.value : null;
+      sensor_bindings.push(sensorVal ? [sensorVal] : []);
     }
   }
 
@@ -612,6 +626,7 @@ function loadKeymapFromDts(dtsContent) {
     _dtsDoc: doc,
     layer_names,
     layers,
+    sensor_bindings,
     combos,
     macros,
     conditional_layers,
@@ -640,6 +655,15 @@ function updateKeymapDts(dtsContent, updatedKeymap) {
 
       const bindingsList = layer.map(b => typeof b === 'string' ? b : encodeKeyBinding(b)).join(' ');
       layerNode.setProperty('bindings', bindingsList, `<${bindingsList}>`);
+
+      if (updatedKeymap.sensor_bindings && updatedKeymap.sensor_bindings[i]) {
+        const sensorList = Array.isArray(updatedKeymap.sensor_bindings[i])
+          ? updatedKeymap.sensor_bindings[i].join(' ')
+          : updatedKeymap.sensor_bindings[i];
+        if (sensorList) {
+          layerNode.setProperty('sensor-bindings', sensorList, `<${sensorList}>`);
+        }
+      }
     });
   }
 

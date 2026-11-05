@@ -184,7 +184,7 @@ Related Requirements: FR-013, DES-008
 Done When: O serializador gera e lê corretamente sensor-bindings para todas as camadas configuradas.
 Recommended Agent: self
 Dependencies: TASK-013
-Status: Pending
+Status: Done
 
 TASK-016
 Title: Renderização e interação com Encoders no Layout do Teclado
