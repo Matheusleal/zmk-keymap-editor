@@ -144,7 +144,7 @@ Related Requirements: FR-011, NFR-001, DES-006
 Done When: Teste de round-trip resulta em saída idêntica sem perda de formatação ou comentários.
 Recommended Agent: self
 Dependencies: TASK-011
-Status: Pending
+Status: Done
 
 TASK-013
 Title: Integração do novo AST Engine no serviço keymap.js
