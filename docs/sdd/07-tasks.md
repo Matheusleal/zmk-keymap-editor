@@ -46,7 +46,11 @@ Recommended Agent: self
 Dependencies: TASK-003
 Status: Done
 
-<!-- Registro do gate M1 (data) — veredito do sdd-validator -->
+### Registro do Gate M1 (2026-11-04) — Veredito: Aprovado
+- **Escopo**: TASK-001 a TASK-004 (FR-001, FR-002, FR-003, FR-004, FR-005, DES-001).
+- **Evidências**: 15 testes unitários passando em `api/tests/` (zmk-behaviors, zmk-keycodes, frontend-integration).
+- **Dívidas**: Nenhuma dívida aberta.
+- **Veredito**: APROVADO.
 
 ---
 
@@ -60,7 +64,7 @@ Related Requirements: FR-006, DES-002
 Done When: Teste unitário valida a serialização correta de múltiplos combos com timeout-ms, key-positions, bindings e layers.
 Recommended Agent: self
 Dependencies: TASK-004
-Status: Pending
+Status: Done
 
 TASK-006
 Title: Interface visual do Gerenciador de Combos no Frontend

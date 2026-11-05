@@ -12,7 +12,7 @@ const defaults = require('./defaults')
 
 class KeymapValidationError extends Error {
   constructor (errors) {
-    super()
+    super(Array.isArray(errors) ? errors.join('; ') : String(errors))
     this.name = 'KeymapValidationError'
     this.errors = errors
   }
@@ -34,14 +34,33 @@ function encodeKeyBinding(parsed) {
 }
 
 function encodeKeymap(parsedKeymap) {
-  return Object.assign({}, parsedKeymap, {
+  const encoded = Object.assign({}, parsedKeymap, {
     layers: parsedKeymap.layers.map(layer => layer.map(encodeKeyBinding))
   })
+
+  if (Array.isArray(parsedKeymap.combos)) {
+    encoded.combos = parsedKeymap.combos.map(combo => {
+      const binding = typeof combo.bindings === 'string'
+        ? combo.bindings
+        : (combo.bindings ? encodeKeyBinding(combo.bindings) : '&none')
+      return Object.assign({}, combo, { bindings: binding })
+    })
+  }
+
+  return encoded
 }
 
 function getBehavioursUsed(keymap) {
-  const keybinds = flatten(keymap.layers)
-  return uniq(map(keybinds, 'value'))
+  const layerBinds = map(flatten(keymap.layers), 'value')
+  const comboBinds = (keymap.combos || []).map(c => {
+    if (typeof c.bindings === 'string') {
+      const match = c.bindings.match(/^(&.+?)\b/)
+      return match ? match[1] : null
+    }
+    return c.bindings ? c.bindings.value : null
+  }).filter(Boolean)
+
+  return uniq([...layerBinds, ...comboBinds])
 }
 
 /**
@@ -71,11 +90,60 @@ function parseKeyBinding(binding) {
 }
 
 function parseKeymap (keymap) {
-  return Object.assign({}, keymap, {
+  const parsed = Object.assign({}, keymap, {
     layers: keymap.layers.map(layer =>  {
       return layer.map(parseKeyBinding)
     })
   })
+
+  if (Array.isArray(keymap.combos)) {
+    parsed.combos = keymap.combos.map(combo => {
+      const bindings = typeof combo.bindings === 'string'
+        ? parseKeyBinding(combo.bindings)
+        : combo.bindings
+      return Object.assign({}, combo, { bindings })
+    })
+  }
+
+  return parsed
+}
+
+function sanitizeDtsIdentifier(name) {
+  const sanitized = (name || '').replace(/[^a-zA-Z0-9_]/g, '_')
+  return /^[0-9]/.test(sanitized) ? `_${sanitized}` : sanitized
+}
+
+function renderCombos(combos) {
+  if (!combos || !Array.isArray(combos) || combos.length === 0) {
+    return ''
+  }
+
+  const renderedNodes = combos.map((combo, idx) => {
+    const rawName = combo.name || `combo_${idx}`
+    const nodeName = sanitizeDtsIdentifier(rawName)
+    const timeout = combo.timeout_ms || combo['timeout-ms'] || 50
+    const positions = (combo.key_positions || combo['key-positions'] || []).join(' ')
+    const binding = typeof combo.bindings === 'string'
+      ? combo.bindings
+      : (combo.bindings ? encodeKeyBinding(combo.bindings) : '&none')
+    const layers = combo.layers && combo.layers.length > 0
+      ? `\n            layers = <${combo.layers.join(' ')}>;`
+      : ''
+    const slowRelease = (combo.slow_release || combo['slow-release'])
+      ? '\n            slow-release;'
+      : ''
+
+    return `        ${nodeName} {
+            timeout-ms = <${timeout}>;
+            key-positions = <${positions}>;
+            bindings = <${binding}>;${layers}${slowRelease}
+        };`
+  }).join('\n\n')
+
+  return `    combos {
+        compatible = "zmk,combos";
+${renderedNodes}
+    };\n\n`
 }
 
 function generateKeymap (layout, keymap, template) {
@@ -89,6 +157,10 @@ function generateKeymap (layout, keymap, template) {
 function renderTemplate(template, params) {
   const includesPattern = /\{\{\s*behaviour_includes\s*\}\}/
   const layersPattern = /\{\{\s*rendered_layers\s*\}\}/
+  const combosPattern = /\{\{\s*combos\s*\}\}/
+  const macrosPattern = /\{\{\s*macros\s*\}\}/
+  const conditionalLayersPattern = /\{\{\s*conditional_layers\s*\}\}/
+  const behaviorsPattern = /\{\{\s*behaviors\s*\}\}/
 
   const renderedLayers = params.layers.map((layer, i) => {
     const name = i === 0 ? 'default_layer' : `layer_${params.layerNames[i] || i}`
@@ -106,9 +178,24 @@ ${rendered}
 `
   })
 
-  return template
+  const renderedCombos = renderCombos(params.combos)
+
+  let rendered = template
     .replace(includesPattern, params.behaviourHeaders.join('\n'))
     .replace(layersPattern, renderedLayers.join(''))
+
+  if (combosPattern.test(rendered)) {
+    rendered = rendered.replace(combosPattern, renderedCombos)
+  } else if (renderedCombos) {
+    rendered = rendered.replace(/(keymap\s*\{)/, `${renderedCombos}$1`)
+  }
+
+  rendered = rendered
+    .replace(macrosPattern, '')
+    .replace(conditionalLayersPattern, '')
+    .replace(behaviorsPattern, '')
+
+  return rendered
 }
 
 function generateKeymapCode (layout, keymap, encoded, template) {
@@ -121,6 +208,7 @@ function generateKeymapCode (layout, keymap, encoded, template) {
     layout,
     behaviourHeaders,
     layers: encoded.layers,
+    combos: encoded.combos || keymap.combos,
     layerNames: names
   })
 }
@@ -168,6 +256,26 @@ function validateKeymapJson(keymap) {
 
           // TODO: validate remaining bind parameters
         }
+      }
+    }
+
+    if (keymap.combos !== undefined) {
+      if (!Array.isArray(keymap.combos)) {
+        errors.push('"combos" must be an array')
+      } else {
+        keymap.combos.forEach((c, idx) => {
+          if (!c || typeof c !== 'object') {
+            errors.push(`Combo at combos[${idx}] must be an object`)
+          } else {
+            const positions = c.key_positions || c['key-positions']
+            if (!Array.isArray(positions) || positions.length < 2) {
+              errors.push(`Combo at combos[${idx}] must have a "key_positions" array with at least 2 positions`)
+            }
+            if (!c.bindings) {
+              errors.push(`Combo at combos[${idx}] must specify "bindings"`)
+            }
+          }
+        })
       }
     }
   }
