@@ -11,20 +11,21 @@
 }
 .layer-selector li {
 	cursor: pointer;
-	background-color: rgba(201, 201, 201, 0.85);
-	color: darkgray;
+	background-color: var(--key-bg-base);
+	color: var(--fg);
 	border-radius: 15px;
   height: 30px;
 	padding: 0px;
 	margin: 4px 2px;
-
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+	transition: all 150ms ease;
 }
 .layer-selector li:hover {
-  background-color: rgba(60, 179, 113, 0.85);
+  background-color: var(--hover-selection);
   color: white;
 }
 .layer-selector li.active {
-	background-color: rgb(60, 179, 113);
+	background-color: var(--selection);
 	color: white;
 }
 

@@ -1,22 +1,21 @@
 # 11 — Project Memory (Memória Viva)
 
-Estado atual: Todos os 5 Milestones (M1 a M5) e 19 tarefas concluídos. Regra de segurança de dependências ativada.
+Estado atual: TASK-020 Concluída (correção de inicialização do servidor estático em npm start e fidelidade visual com upstream nickcoutsos.github.io/keymap-editor).
 Branch: `feature/planejamento-melhorias-zmk`
 Última Atualização: 2026-11-05
 
 ## 1. Contexto e Decisões Ativas
-- Governança SDD concluída integralmente (19 de 19 tarefas finalizadas).
-- Commits atômicos por task com testes unitários e de integração verificados em cada etapa.
-- Todos os Gates (M1, M2, M3, M4, M5) validados e aprovados.
-- 54 testes unitários e de integração passando em `npm test`.
-- Build de produção React (`npm --prefix app run build`) 100% íntegro.
-- Pull Request criado com autorização explícita: #1 em `Matheusleal/zmk-keymap-editor` (feature/planejamento-melhorias-zmk -> main).
-- **Compatibilidade Real ZMK**: Suporte completo a repositórios no formato oficial ZMK (como zmk-sofle) com descoberta automática de layout em `config/*.json` e parsing de `.keymap` DTS tanto via WebFs quanto servidor local. 57 testes passando.
-- **Regra de Segurança de Dependências**: Obrigatória checagem de vulnerabilidades (`npm audit`, GitHub Advisory, CVEs) antes de instalar ou atualizar pacotes, mantendo aprovação prévia do usuário.
+- Governança SDD concluída: TASK-020 finalizada com sucesso.
+- `npm start` testado e validado: Express serve static files de `app/build` na porta 8080 (código 200, HTML com tema carregado).
+- Interface visual fidelizada à versão canônica de produção (`nickcoutsos.github.io/keymap-editor`):
+  - Sistema de temas completo (Dark / Light / System) com suporte a `prefers-color-scheme` e variáveis CSS canônicas.
+  - Barra de configurações (`#settings-bar`) com botão de alternância de tema no canto superior direito e persistência em `localStorage`.
+  - Abas superiores limpas para troca entre `Layers`, `Combos`, `Macros`, `Conditional Layers`, `Custom Behaviors`.
+  - Estilização das teclas (keycaps) com background `--key-bg-base`, cor `--key-color-base`, bordas arredondadas e sombras suaves idênticas ao original.
+  - Barra de ações superior organizada (Save, Export SVG, Firmware Build) sem poluição visual.
+- 57 testes unitários e de integração passando integralmente.
+- Restrição estrita mantida: NENHUM arquivo de `zmk-sofle` foi alterado.
 
 ## 2. Entregáveis do Projeto
-- M1: Metadados ZMK atualizados (&out, &bt BT_CLR_ALL/BT_DISC, &sys_reset, &soft_off, &kt, RGB_COLOR_HSB, keycodes modernos).
-- M2: Funcionalidades centrais ZMK (Combos, Macros timeline, Conditional Layers, Custom Behaviors para Home Row Mods).
-- M3: Motor AST Devicetree não-destrutivo e Web File System Access API para manipulação local direta.
-- M4: Periféricos e Pointing (Rotary Encoders sensor-bindings e mouse keys &mkp, &mmv, &msc).
-- M5: Pipeline de firmware e exportação (GitHub Actions run polling + download .uf2, gerador de diagramas SVG).
+- M1 a M5 concluídos (19 tarefas).
+- TASK-020: Estabilização de npm start e fidelidade visual com nickcoutsos.github.io/keymap-editor concluída.

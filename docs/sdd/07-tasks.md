@@ -233,3 +233,19 @@ Dependencies: TASK-016
 Status: Done
 
 <!-- Registro do gate M5 (2026-11-05) — veredito: APROVADO. 54 testes unitários passando, build de produção validado sem erros, integração com GitHub Actions e gerador SVG Keymap Drawer concluídos. -->
+
+---
+
+## Bloco Estabilização e Fidelidade Visual (UX/DX)
+
+TASK-020
+Title: Correção de inicialização em npm start e harmonização de fidelidade visual com nickcoutsos.github.io/keymap-editor
+Goal: Corrigir o servidor Express para servir os estáticos de app/build em npm start e alinhar a interface visual com a versão canônica (sistema de temas light/dark/system, #settings-bar, navegação por abas para novos recursos e estilo das keycaps).
+Inputs: api/index.js, app/src/App.js, app/src/App.css, app/public/index.html, app/src/Keyboard/Keys/styles.module.css, app/src/Keyboard/styles.module.css
+Related Requirements: NFR-001, NFR-004, DES-001
+Done When: npm start carrega a aplicação na porta 8080 sem erros; npm run dev apresenta layout, cores, temas light/dark e keycaps idênticos à versão canônica do editor com abas superiores limpas.
+Recommended Agent: self
+Dependencies: TASK-019
+Status: Done
+
+

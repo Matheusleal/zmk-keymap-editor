@@ -1,6 +1,6 @@
 import '@fortawesome/fontawesome-free/css/all.css'
 import keyBy from 'lodash/keyBy'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import * as config from './config'
 import './App.css';
@@ -21,6 +21,8 @@ import ActionsPoller from './Pickers/Github/ActionsPoller'
 import SvgExportModal from './Export/SvgExportModal'
 
 function App() {
+  const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'system')
+  const [activeTab, setActiveTab] = useState('layers')
   const [definitions, setDefinitions] = useState(null)
   const [source, setSource] = useState(null)
   const [sourceOther, setSourceOther] = useState(null)
@@ -34,6 +36,22 @@ function App() {
   const [showBehaviors, setShowBehaviors] = useState(false)
   const [showActions, setShowActions] = useState(false)
   const [showExportSvg, setShowExportSvg] = useState(false)
+
+  useEffect(() => {
+    document.body.setAttribute('data-theme', theme)
+    localStorage.setItem('theme', theme)
+  }, [theme])
+
+  function cycleTheme() {
+    const next = theme === 'system' ? 'dark' : theme === 'dark' ? 'light' : 'system'
+    setTheme(next)
+  }
+
+  function getThemeIcon() {
+    if (theme === 'light') return 'fa-sun'
+    if (theme === 'dark') return 'fa-moon'
+    return 'fa-circle-half-stroke'
+  }
 
   function handleCompile() {
     fetch(`${config.apiBaseUrl}/keymap`, {
@@ -120,74 +138,108 @@ function App() {
     setEditingKeymap(keymap)
   }, [setEditingKeymap])
 
+  const tabs = [
+    { id: 'layers', label: 'Layers', icon: 'fa-layer-group' },
+    { id: 'combos', label: 'Combos', icon: 'fa-object-group' },
+    { id: 'macros', label: 'Macros', icon: 'fa-bolt' },
+    { id: 'conditional', label: 'Conditional Layers', icon: 'fa-code-branch' },
+    { id: 'behaviors', label: 'Custom Behaviors', icon: 'fa-sliders' }
+  ]
+
   return (
     <>
+      <div id="settings-bar">
+        <button
+          id="theme-toggle"
+          title={`Current theme: ${theme}. Click to toggle.`}
+          onClick={cycleTheme}
+        >
+          <i className={`fa-solid ${getThemeIcon()}`} />
+        </button>
+      </div>
+
       <Loader load={initialize}>
-        <KeyboardPicker onSelect={handleKeyboardSelected} />
-        <div id="actions">
+        <div id="app-header">
+          <KeyboardPicker onSelect={handleKeyboardSelected} />
+
           {keymap && (
-            <>
-              <button
-                title="Manage ZMK Combos"
-                onClick={() => setShowCombos(true)}
-              >
-                Combos
-              </button>
-              <button
-                title="Manage ZMK Macros"
-                onClick={() => setShowMacros(true)}
-              >
-                Macros
-              </button>
-              <button
-                title="Manage Conditional Layers (Tri-Layer)"
-                onClick={() => setShowConditionalLayers(true)}
-              >
-                Conditional Layers
-              </button>
-              <button
-                title="Manage Custom Behaviors (Hold-Tap)"
-                onClick={() => setShowBehaviors(true)}
-              >
-                Custom Behaviors
-              </button>
+            <ul className="editor-tabs">
+              {tabs.map(tab => (
+                <li
+                  key={tab.id}
+                  className={activeTab === tab.id ? 'active' : ''}
+                  onClick={() => {
+                    setActiveTab(tab.id)
+                    if (tab.id === 'combos') setShowCombos(true)
+                    else if (tab.id === 'macros') setShowMacros(true)
+                    else if (tab.id === 'conditional') setShowConditionalLayers(true)
+                    else if (tab.id === 'behaviors') setShowBehaviors(true)
+                  }}
+                >
+                  <i className={`fa-solid ${tab.icon}`} style={{ marginRight: '6px' }} />
+                  {tab.label}
+                </li>
+              ))}
+            </ul>
+          )}
+
+          <div className="header-actions">
+            {keymap && (
               <button
                 title="Export visual SVG diagram of all layers and combos"
                 onClick={() => setShowExportSvg(true)}
               >
+                <i className="fa-solid fa-file-image" />
                 Export SVG
               </button>
-            </>
-          )}
-          {source === 'local' && (
-            <button disabled={!editingKeymap} onClick={handleCompile}>
-              Save Local
-            </button>
-          )}
-          {source === 'webfs' && (
-            <button disabled={!editingKeymap} onClick={handleSaveWebFs}>
-              {saving ? 'Saving...' : 'Save to Folder'}
-            </button>
-          )}
-          {source === 'github' && (
-            <>
+            )}
+
+            {source === 'local' && (
               <button
-                title="Commit keymap changes to GitHub repository"
+                className="primary"
                 disabled={!editingKeymap}
-                onClick={handleCommitChanges}
+                onClick={handleCompile}
               >
-                {saving ? 'Saving' : 'Commit Changes'}
-                {saving && <Spinner />}
+                <i className="fa-solid fa-floppy-disk" />
+                Save Local
               </button>
+            )}
+
+            {source === 'webfs' && (
               <button
-                title="Monitor firmware compilation on GitHub Actions and download .uf2"
-                onClick={() => setShowActions(true)}
+                className="primary"
+                disabled={!editingKeymap}
+                onClick={handleSaveWebFs}
               >
-                Firmware Build
+                <i className="fa-solid fa-floppy-disk" />
+                {saving ? 'Saving...' : 'Save to Folder'}
               </button>
-            </>
-          )}
+            )}
+
+            {source === 'github' && (
+              <>
+                <button
+                  className="primary"
+                  title="Commit keymap changes to GitHub repository"
+                  disabled={!editingKeymap}
+                  onClick={handleCommitChanges}
+                >
+                  <i className="fa-solid fa-cloud-arrow-up" />
+                  {saving ? 'Saving' : 'Commit Changes'}
+                  {saving && <Spinner />}
+                </button>
+                <button
+                  title="Monitor firmware compilation on GitHub Actions and download .uf2"
+                  onClick={() => setShowActions(true)}
+                >
+                  <i className="fa-solid fa-microchip" />
+                  Firmware Build
+                </button>
+              </>
+            )}
+          </div>
         </div>
+
         <DefinitionsContext.Provider value={definitions}>
           {layout && keymap && (
             <Keyboard
@@ -197,32 +249,45 @@ function App() {
             />
           )}
         </DefinitionsContext.Provider>
+
         {showCombos && (
           <ComboManager
             keymap={editingKeymap || keymap}
             onUpdate={handleUpdateKeymap}
-            onClose={() => setShowCombos(false)}
+            onClose={() => {
+              setShowCombos(false)
+              setActiveTab('layers')
+            }}
           />
         )}
         {showMacros && (
           <MacroEditor
             keymap={editingKeymap || keymap}
             onUpdate={handleUpdateKeymap}
-            onClose={() => setShowMacros(false)}
+            onClose={() => {
+              setShowMacros(false)
+              setActiveTab('layers')
+            }}
           />
         )}
         {showConditionalLayers && (
           <ConditionalLayersModal
             keymap={editingKeymap || keymap}
             onUpdate={handleUpdateKeymap}
-            onClose={() => setShowConditionalLayers(false)}
+            onClose={() => {
+              setShowConditionalLayers(false)
+              setActiveTab('layers')
+            }}
           />
         )}
         {showBehaviors && (
           <CustomBehaviorModal
             keymap={editingKeymap || keymap}
             onUpdate={handleUpdateKeymap}
-            onClose={() => setShowBehaviors(false)}
+            onClose={() => {
+              setShowBehaviors(false)
+              setActiveTab('layers')
+            }}
           />
         )}
         {showActions && sourceOther?.github && (

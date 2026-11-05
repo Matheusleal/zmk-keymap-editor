@@ -105,3 +105,4 @@ export function parseDtsToKeymap(dtsContent) {
 
   return parseKeymapBindings(rawKeymap)
 }
+
