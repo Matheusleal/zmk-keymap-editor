@@ -1,0 +1,127 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 900px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  color: #f8fafc;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #334155;
+  padding: 16px 24px;
+}
+
+.header h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #38bdf8;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 4px;
+  line-height: 1;
+}
+
+.closeButton:hover {
+  color: #f1f5f9;
+}
+
+.body {
+  padding: 20px 24px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.previewContainer {
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow-x: auto;
+  max-height: 50vh;
+}
+
+.previewSvg {
+  max-width: 100%;
+  height: auto;
+}
+
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 16px 24px;
+  border-top: 1px solid #334155;
+  background: #0f172a;
+}
+
+.primaryButton {
+  background: #0284c7;
+  color: #ffffff;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+}
+
+.primaryButton:hover {
+  background: #0369a1;
+}
+
+.secondaryButton {
+  background: #334155;
+  color: #f8fafc;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border: 1px solid #475569;
+  cursor: pointer;
+}
+
+.secondaryButton:hover {
+  background: #475569;
+}
+
+.copiedToast {
+  color: #4ade80;
+  font-size: 0.85rem;
+  margin-right: auto;
+  align-self: center;
+}

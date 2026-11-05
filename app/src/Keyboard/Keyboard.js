@@ -8,6 +8,7 @@ import { useContext, useMemo, useState } from 'react'
 
 import KeyboardLayout from './KeyboardLayout'
 import LayerSelector from './LayerSelector'
+import EncoderWidget from './EncoderWidget'
 import { getKeyBoundingBox } from '../key-units'
 import { DefinitionsContext, SearchContext } from '../providers'
 
@@ -55,6 +56,15 @@ function Keyboard(props) {
     // Currently this is just `&bt BT_SEL` and is only represented as an enum.
     if (param.enum) {
       return param.enum.map(v => ({ code: v }))
+    }
+
+    if (param.min !== undefined && param.max !== undefined) {
+      const step = param.name === 'hue' ? 30 : 10
+      const options = []
+      for (let v = param.min; v <= param.max; v += step) {
+        options.push({ code: v, description: `${v}` })
+      }
+      return options
     }
 
     if (param === 'command') {
@@ -145,6 +155,11 @@ function Keyboard(props) {
         onNewLayer={handleCreateLayer}
         onRenameLayer={handleRenameLayer}
         onDeleteLayer={handleDeleteLayer}
+      />
+      <EncoderWidget
+        activeLayer={activeLayer}
+        keymap={keymap}
+        onUpdate={onUpdate}
       />
       <SearchContext.Provider value={{ getSearchTargets, sources }}>
         <div style={getWrapperStyle()}>

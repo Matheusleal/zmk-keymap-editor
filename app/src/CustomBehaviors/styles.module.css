@@ -1,0 +1,180 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(15, 23, 42, 0.7);
+  display: flex;
+  justifyContent: center;
+  align-items: center;
+  z-index: 100;
+}
+
+.modal {
+  background: #1e293b;
+  color: #f8fafc;
+  border-radius: 8px;
+  width: 680px;
+  max-width: 90vw;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+  border: 1px solid #334155;
+  font-family: inherit;
+}
+
+.header {
+  display: flex;
+  justifyContent: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid #334155;
+}
+
+.header h2 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.closeButton {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-size: 1.25rem;
+  cursor: pointer;
+}
+
+.closeButton:hover {
+  color: #ffffff;
+}
+
+.content {
+  padding: 20px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.behaviorList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.behaviorItem {
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 6px;
+  padding: 12px 16px;
+  display: flex;
+  justifyContent: space-between;
+  align-items: center;
+}
+
+.behaviorInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.behaviorCode {
+  font-weight: 700;
+  color: #38bdf8;
+}
+
+.behaviorDetails {
+  font-size: 0.85rem;
+  color: #94a3b8;
+}
+
+.deleteBtn {
+  background: #ef4444;
+  color: #ffffff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.deleteBtn:hover {
+  background: #dc2626;
+}
+
+.form {
+  background: #0f172a;
+  border: 1px solid #38bdf8;
+  border-radius: 6px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.formRow {
+  display: flex;
+  gap: 12px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+
+.formGroup label {
+  font-size: 0.85rem;
+  color: #cbd5e1;
+}
+
+.formGroup input, .formGroup select {
+  background: #1e293b;
+  border: 1px solid #475569;
+  color: #f8fafc;
+  padding: 8px 12px;
+  border-radius: 4px;
+}
+
+.checkboxGroup {
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+
+.formActions {
+  display: flex;
+  justifyContent: flex-end;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.primaryBtn {
+  background: #0284c7;
+  color: #ffffff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.primaryBtn:hover {
+  background: #0369a1;
+}
+
+.actionBtn {
+  background: #334155;
+  color: #f8fafc;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.emptyState {
+  text-align: center;
+  color: #64748b;
+  padding: 24px;
+}

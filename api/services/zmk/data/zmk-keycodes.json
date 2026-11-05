@@ -5547,5 +5547,197 @@
       "ios": null
     },
     "footnotes": {}
+  },
+  {
+    "names": ["C_MUTE_MIC", "C_MIC_MUTE"],
+    "description": "Mute/unmute microphone input",
+    "context": "Consumer",
+    "clarify": false,
+    "documentation": "https://zmk.dev/docs/keycodes",
+    "os": {
+      "windows": true,
+      "linux": true,
+      "android": true,
+      "macos": true,
+      "ios": true
+    },
+    "footnotes": {}
+  },
+  {
+    "names": ["C_AL_TASK_OR_APP", "C_AL_TASK_APP"],
+    "description": "Task/App manager",
+    "context": "Consumer",
+    "clarify": false,
+    "documentation": "https://zmk.dev/docs/keycodes",
+    "os": {
+      "windows": true,
+      "linux": true,
+      "android": true,
+      "macos": true,
+      "ios": true
+    },
+    "footnotes": {}
+  },
+  {
+    "names": ["C_AL_WWW", "C_AL_INTERNET_BROWSER"],
+    "description": "Internet browser",
+    "context": "Consumer",
+    "clarify": false,
+    "documentation": "https://zmk.dev/docs/keycodes",
+    "os": {
+      "windows": true,
+      "linux": true,
+      "android": true,
+      "macos": true,
+      "ios": true
+    },
+    "footnotes": {}
+  },
+  {
+    "names": ["C_KB_LAYOUT_SELECT", "C_KEYBOARD_LAYOUT_SELECT"],
+    "description": "Keyboard layout selector",
+    "context": "Consumer",
+    "clarify": false,
+    "documentation": "https://zmk.dev/docs/keycodes",
+    "os": {
+      "windows": true,
+      "linux": true,
+      "android": true,
+      "macos": true,
+      "ios": true
+    },
+    "footnotes": {}
+  },
+  {
+    "names": ["C_ILLUMINATION_TOGGLE"],
+    "description": "Toggle illumination",
+    "context": "Consumer",
+    "clarify": false,
+    "documentation": "https://zmk.dev/docs/keycodes",
+    "os": {
+      "windows": true,
+      "linux": true,
+      "android": true,
+      "macos": true,
+      "ios": true
+    },
+    "footnotes": {}
+  },
+  {
+    "names": ["LCLK"],
+    "description": "Left mouse click (Button 1)",
+    "context": "Pointing",
+    "clarify": false,
+    "documentation": "https://zmk.dev/docs/keycodes#mouse-emulation",
+    "os": { "windows": true, "linux": true, "android": true, "macos": true, "ios": true },
+    "footnotes": {}
+  },
+  {
+    "names": ["RCLK"],
+    "description": "Right mouse click (Button 2)",
+    "context": "Pointing",
+    "clarify": false,
+    "documentation": "https://zmk.dev/docs/keycodes#mouse-emulation",
+    "os": { "windows": true, "linux": true, "android": true, "macos": true, "ios": true },
+    "footnotes": {}
+  },
+  {
+    "names": ["MCLK"],
+    "description": "Middle mouse click (Button 3)",
+    "context": "Pointing",
+    "clarify": false,
+    "documentation": "https://zmk.dev/docs/keycodes#mouse-emulation",
+    "os": { "windows": true, "linux": true, "android": true, "macos": true, "ios": true },
+    "footnotes": {}
+  },
+  {
+    "names": ["MB4"],
+    "description": "Mouse button 4",
+    "context": "Pointing",
+    "clarify": false,
+    "documentation": "https://zmk.dev/docs/keycodes#mouse-emulation",
+    "os": { "windows": true, "linux": true, "android": true, "macos": true, "ios": true },
+    "footnotes": {}
+  },
+  {
+    "names": ["MB5"],
+    "description": "Mouse button 5",
+    "context": "Pointing",
+    "clarify": false,
+    "documentation": "https://zmk.dev/docs/keycodes#mouse-emulation",
+    "os": { "windows": true, "linux": true, "android": true, "macos": true, "ios": true },
+    "footnotes": {}
+  },
+  {
+    "names": ["MOVE_UP", "MOVE_U"],
+    "description": "Move cursor up",
+    "context": "Pointing",
+    "clarify": false,
+    "documentation": "https://zmk.dev/docs/keycodes#mouse-emulation",
+    "os": { "windows": true, "linux": true, "android": true, "macos": true, "ios": true },
+    "footnotes": {}
+  },
+  {
+    "names": ["MOVE_DOWN", "MOVE_D"],
+    "description": "Move cursor down",
+    "context": "Pointing",
+    "clarify": false,
+    "documentation": "https://zmk.dev/docs/keycodes#mouse-emulation",
+    "os": { "windows": true, "linux": true, "android": true, "macos": true, "ios": true },
+    "footnotes": {}
+  },
+  {
+    "names": ["MOVE_LEFT", "MOVE_L"],
+    "description": "Move cursor left",
+    "context": "Pointing",
+    "clarify": false,
+    "documentation": "https://zmk.dev/docs/keycodes#mouse-emulation",
+    "os": { "windows": true, "linux": true, "android": true, "macos": true, "ios": true },
+    "footnotes": {}
+  },
+  {
+    "names": ["MOVE_RIGHT", "MOVE_R"],
+    "description": "Move cursor right",
+    "context": "Pointing",
+    "clarify": false,
+    "documentation": "https://zmk.dev/docs/keycodes#mouse-emulation",
+    "os": { "windows": true, "linux": true, "android": true, "macos": true, "ios": true },
+    "footnotes": {}
+  },
+  {
+    "names": ["SCRL_UP", "SCRL_U"],
+    "description": "Scroll cursor up",
+    "context": "Pointing",
+    "clarify": false,
+    "documentation": "https://zmk.dev/docs/keycodes#mouse-emulation",
+    "os": { "windows": true, "linux": true, "android": true, "macos": true, "ios": true },
+    "footnotes": {}
+  },
+  {
+    "names": ["SCRL_DOWN", "SCRL_D"],
+    "description": "Scroll cursor down",
+    "context": "Pointing",
+    "clarify": false,
+    "documentation": "https://zmk.dev/docs/keycodes#mouse-emulation",
+    "os": { "windows": true, "linux": true, "android": true, "macos": true, "ios": true },
+    "footnotes": {}
+  },
+  {
+    "names": ["SCRL_LEFT", "SCRL_L"],
+    "description": "Scroll cursor left",
+    "context": "Pointing",
+    "clarify": false,
+    "documentation": "https://zmk.dev/docs/keycodes#mouse-emulation",
+    "os": { "windows": true, "linux": true, "android": true, "macos": true, "ios": true },
+    "footnotes": {}
+  },
+  {
+    "names": ["SCRL_RIGHT", "SCRL_R"],
+    "description": "Scroll cursor right",
+    "context": "Pointing",
+    "clarify": false,
+    "documentation": "https://zmk.dev/docs/keycodes#mouse-emulation",
+    "os": { "windows": true, "linux": true, "android": true, "macos": true, "ios": true },
+    "footnotes": {}
   }
 ]

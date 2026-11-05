@@ -10,7 +10,9 @@ const {
   fetchKeyboardFiles,
   createOauthFlowUrl,
   createOauthReturnUrl,
-  commitChanges
+  commitChanges,
+  fetchWorkflowRuns,
+  fetchRunArtifacts
 } = require('../services/github')
 const { createInstallationToken } = require('../services/github/auth')
 const { MissingRepoFile, findCodeKeymap } = require('../services/github/files')
@@ -144,8 +146,35 @@ const receiveWebhook = (req, res) => {
   res.sendStatus(200)
 }
 
+const getWorkflowRuns = async (req, res, next) => {
+  const { installationId, repository } = req.params
+  const { branch } = req.query
+
+  try {
+    const { data: { token: installationToken } } = await createInstallationToken(installationId)
+    const runs = await fetchWorkflowRuns(installationToken, repository, branch)
+    res.json(runs)
+  } catch (err) {
+    next(err)
+  }
+}
+
+const getRunArtifacts = async (req, res, next) => {
+  const { installationId, repository, runId } = req.params
+
+  try {
+    const { data: { token: installationToken } } = await createInstallationToken(installationId)
+    const artifacts = await fetchRunArtifacts(installationToken, repository, runId)
+    res.json(artifacts)
+  } catch (err) {
+    next(err)
+  }
+}
+
 router.get('/authorize', authorize)
 router.get('/installation/:installationId/:repository/branches', authenticate, getBranches)
+router.get('/installation/:installationId/:repository/actions/runs', authenticate, getWorkflowRuns)
+router.get('/installation/:installationId/:repository/actions/runs/:runId/artifacts', authenticate, getRunArtifacts)
 router.get('/installation', authenticate, getInstallation)
 router.get('/keyboard-files/:installationId/:repository', authenticate, getKeyboardFiles)
 router.post('/keyboard-files/:installationId/:repository/:branch', authenticate, updateKeyboardFiles)

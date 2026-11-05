@@ -130,6 +130,27 @@ export class API extends EventEmitter {
       data: { layout, keymap }
     })
   }
+
+  async fetchWorkflowRuns(repo, branch) {
+    const installation = encodeURIComponent(this.repoInstallationMap[repo])
+    const repository = encodeURIComponent(repo)
+    let url = `/github/installation/${installation}/${repository}/actions/runs`
+    if (branch) {
+      url += `?branch=${encodeURIComponent(branch)}`
+    }
+
+    const { data } = await this._request(url)
+    return data
+  }
+
+  async fetchRunArtifacts(repo, runId) {
+    const installation = encodeURIComponent(this.repoInstallationMap[repo])
+    const repository = encodeURIComponent(repo)
+    const url = `/github/installation/${installation}/${repository}/actions/runs/${encodeURIComponent(runId)}/artifacts`
+
+    const { data } = await this._request(url)
+    return data
+  }
 }
 
 export default new API()
