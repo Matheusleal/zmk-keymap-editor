@@ -258,6 +258,18 @@ Recommended Agent: self
 Dependencies: TASK-020
 Status: Done
 
+TASK-022
+Title: Modal Canônico de Edição de Tecla (Key Binding Editor com Mini-Matrix, Behavior, Parameters, Apply e Cancel)
+Goal: Implementar o modal canônico de edição ao clicar em qualquer tecla do teclado: cabeçalho com mini-matriz do layout (tecla ativa em verde), seta e preview da keycap; seletores de Behavior e Parameters com sublinhado pontilhado; botões de ação Apply e Cancel; e painel de busca integrado.
+Inputs: app/src/Keyboard/Keys/KeyEditModal.js, app/src/Keyboard/Keys/KeyEditModal.module.css, app/src/Keyboard/Keys/Key.js, app/src/Keyboard/KeyboardLayout.js
+Related Requirements: NFR-004, DES-001
+Done When: Clicar em qualquer tecla do teclado abre o popup idêntico à imagem de referência do usuário com mini-matriz, preview da tecla, Behavior, Parameters, botões Apply e Cancel funcionais e seletor de valores integrado.
+Recommended Agent: self
+Dependencies: TASK-021
+Status: Done
+
+
+
 
 
 

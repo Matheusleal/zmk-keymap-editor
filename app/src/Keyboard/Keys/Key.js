@@ -1,8 +1,6 @@
-import cloneDeep from 'lodash/cloneDeep'
 import get from 'lodash/get'
-import pick from 'lodash/pick'
 import PropTypes from 'prop-types'
-import { useContext, useState } from 'react'
+import { useContext } from 'react'
 
 import { SearchContext } from '../../providers'
 import { getBehaviourParams } from '../../keymap'
@@ -11,7 +9,6 @@ import { getKeyStyles } from '../../key-units'
 import KeyParamlist from './KeyParamlist'
 import * as keyPropTypes from './keyPropTypes'
 import {
-  createPromptMessage,
   hydrateTree,
   isSimple,
   isComplex,
@@ -19,62 +16,31 @@ import {
 } from './util'
 import styles from './styles.module.css'
 
-import Modal from '../../Common/Modal'
-import ValuePicker from '../../ValuePicker'
-
 function Key(props) {
-  const { getSearchTargets, sources } = useContext(SearchContext)
+  const { sources } = useContext(SearchContext)
   const { position, rotation, size } = props
-  const { label, value, params, onUpdate } = props
-  const [editing, setEditing] = useState(null)
+  const { label, value, params, onClick } = props
 
   const bind = value
   const behaviour = get(sources.behaviours, bind)
   const behaviourParams = getBehaviourParams(params, behaviour)
 
   const normalized = hydrateTree(value, params, sources)
-
   const index = makeIndex(normalized)
   const positioningStyle = getKeyStyles(position, size, rotation)
 
   function onMouseOver(event) {
     const old = document.querySelector(`.${styles.highlight}`)
     old && old.classList.remove(styles.highlight)
-    event.target.classList.add(styles.highlight)
+    event.currentTarget.classList.add(styles.highlight)
   }
   function onMouseLeave(event) {
-    event.target.classList.remove(styles.highlight)
+    event.currentTarget.classList.remove(styles.highlight)
   }
 
-  function handleSelectCode(event) {
-    const editing = pick(event, ['target', 'codeIndex', 'code', 'param'])
-    editing.targets = getSearchTargets(editing.param, value)
-    setEditing(editing)
-  }
-  function handleSelectBehaviour(event) {
-    event.stopPropagation()
-    setEditing({
-      target: event.target,
-      targets: getSearchTargets('behaviour', value),
-      codeIndex: 0,
-      code: value,
-      param: 'behaviour'
-    })
-  }
-  function handleSelectValue(source) {
-    const { codeIndex } = editing
-    const updated = cloneDeep(normalized)
-    const index = makeIndex(updated)
-    const targetCode = index[codeIndex]
-
-    targetCode.value = source.code
-    targetCode.params = []
-    index.forEach(node => {
-      delete node.source
-    })
-
-    setEditing(null)
-    onUpdate(pick(updated, ['value', 'params']))
+  const handleClick = (e) => {
+    e.stopPropagation()
+    if (onClick) onClick(e)
   }
 
   return (
@@ -85,41 +51,27 @@ function Key(props) {
       data-h={size.h}
       data-simple={isSimple(normalized)}
       data-long={isComplex(normalized, behaviourParams)}
-      style={positioningStyle}
+      style={{ ...positioningStyle, cursor: 'pointer' }}
       onMouseOver={onMouseOver}
       onMouseLeave={onMouseLeave}
+      onClick={handleClick}
     >
-    {value ? (
-      <span
-        className={styles['behaviour-binding']}
-        onClick={handleSelectBehaviour}
-        title={behaviour?.description || value}
-      >
-        {(behaviour?.code || value).replace(/^&/, '')}
-      </span>
-    ) : null}
-    <KeyParamlist
-      root={true}
-      index={index}
-      params={behaviourParams}
-      values={normalized.params}
-      onSelect={handleSelectCode}
-    />
-    {editing && (
-      <Modal>
-        <ValuePicker
-          target={editing.target}
-          value={editing.code}
-          param={editing.param}
-          choices={editing.targets}
-          prompt={createPromptMessage(editing.param)}
-          searchKey="code"
-          onSelect={handleSelectValue}
-          onCancel={() => setEditing(null)}
-        />
-      </Modal>
-    )}
-  </div>
+      {value ? (
+        <span
+          className={styles['behaviour-binding']}
+          title={behaviour?.description || value}
+        >
+          {(behaviour?.code || value).replace(/^&/, '')}
+        </span>
+      ) : null}
+      <KeyParamlist
+        root={true}
+        index={index}
+        params={behaviourParams}
+        values={normalized.params}
+        onSelect={handleClick}
+      />
+    </div>
   )
 }
 

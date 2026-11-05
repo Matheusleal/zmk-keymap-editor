@@ -1,8 +1,10 @@
 import pick from 'lodash/pick'
 import PropTypes from 'prop-types'
-import { useMemo } from 'react'
+import { useContext, useMemo, useState } from 'react'
 
 import Key from './Keys/Key'
+import KeyEditModal from './Keys/KeyEditModal'
+import { SearchContext } from '../providers'
 
 const position = key => pick(key, ['x', 'y'])
 const rotation = key => {
@@ -16,6 +18,9 @@ const size = key => {
 
 function KeyboardLayout(props) {
   const { layout, bindings, onUpdate } = props
+  const { getSearchTargets, sources } = useContext(SearchContext)
+  const [editingKeyIndex, setEditingKeyIndex] = useState(null)
+
   const safeBindings = Array.isArray(bindings) ? bindings : []
   const normalized = layout.map((_, i) => {
     const raw = safeBindings[i]
@@ -51,9 +56,26 @@ function KeyboardLayout(props) {
           label={key.label}
           value={normalized[i].value}
           params={normalized[i].params}
-          onUpdate={bind => handleUpdateBind(i, bind)}
+          onClick={() => setEditingKeyIndex(i)}
         />
       ))}
+
+      {editingKeyIndex !== null && normalized[editingKeyIndex] && (
+        <KeyEditModal
+          isOpen={editingKeyIndex !== null}
+          keyIndex={editingKeyIndex}
+          layout={layout}
+          value={normalized[editingKeyIndex].value}
+          params={normalized[editingKeyIndex].params}
+          sources={sources}
+          getSearchTargets={getSearchTargets}
+          onApply={updatedBinding => {
+            handleUpdateBind(editingKeyIndex, updatedBinding)
+            setEditingKeyIndex(null)
+          }}
+          onClose={() => setEditingKeyIndex(null)}
+        />
+      )}
     </div>
   )
 }
@@ -65,3 +87,4 @@ KeyboardLayout.propTypes = {
 }
 
 export default KeyboardLayout
+

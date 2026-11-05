@@ -1,20 +1,26 @@
 # 11 — Project Memory (Memória Viva)
 
-Estado atual: TASK-021 Concluída (redesenho da Welcome Page com cards e informações contextuais do teclado ativo).
+Estado atual: TASK-022 Concluída (Modal Canônico de Edição de Tecla com Mini-Matrix, Behavior, Parameters, Apply e Cancel).
 Branch: `feature/planejamento-melhorias-zmk`
 Última Atualização: 2026-11-05
 
 ## 1. Contexto e Decisões Ativas
-- TASK-021 finalizada com sucesso:
-  1. Tela inicial reformulada com cards ilustrados para cada fonte de teclado (Local Folder, Local Server, GitHub) e descrições claras.
-  2. Barra superior com metadados do teclado: nome do teclado/layout, badge de fonte, indicador de alterações não salvas e botão para retornar às fontes.
-  3. Informações completas nas keycaps: binding behavior (&kp, &mo, etc.) e keycode sempre exibidos sem ocultar texto ou exibir símbolos nulos indevidos.
-  4. 57 testes passando em `npm test`. Build de produção gerado.
-  5. Restrição estrita mantida: NENHUM arquivo de `zmk-sofle` foi alterado.
+- TASK-022 finalizada com sucesso:
+  1. Componente `KeyEditModal` implementado de forma 100% fiel à imagem enviada pelo usuário:
+     - Topo com mini-matriz do teclado (tecla ativa destacada em verde `#3cb371`), seta `→` e preview da keycap estilizada (`&kp ESC`).
+     - Linha `Behavior` com chip `&kp | Key Press` sublinhado pontilhado clicável.
+     - Seção `Parameters` com parâmetros do behavior (ex: `Key Code ESC | Escape`) sublinhados pontilhados clicáveis.
+     - Botões `Apply` (verde) e `Cancel` (secundário).
+     - Painel lateral integrado para seleção com busca de behaviors e keycodes via `ValuePicker`.
+  2. Integrado no `KeyboardLayout.js` para ser acionado com clique em qualquer tecla do layout.
+  3. 57 testes unitários e de integração passando integralmente.
+  4. Build de produção React (`npm --prefix app run build`) atualizado com sucesso.
+  5. Nenhuma alteração realizada em `zmk-sofle`.
 
 ## 2. Entregáveis do Projeto
 - M1 a M5 concluídos (19 tarefas).
-- TASK-020 concluída (Express static serving e temas canônicos).
-- TASK-021 concluída (Welcome Page e metadados contextuais do teclado ativo).
+- TASK-020, TASK-021 e TASK-022 concluídas.
+
+
 
 

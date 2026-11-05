@@ -1,0 +1,286 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(2px);
+}
+
+.modalContent {
+  display: flex;
+  background-color: var(--dialog-bg, #1e2228);
+  border: 1px solid var(--code-bg, rgba(255, 255, 255, 0.1));
+  border-radius: 10px;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.55);
+  color: var(--fg, #e6e6e6);
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow: hidden;
+  animation: modal-fade-in 150ms ease-out;
+}
+
+@keyframes modal-fade-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.mainPanel {
+  min-width: 440px;
+  max-width: 480px;
+  padding: 24px 28px;
+  display: flex;
+  flex-direction: column;
+}
+
+.headerRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 18px;
+}
+
+.matrixWrapper {
+  position: relative;
+  display: inline-block;
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 6px;
+  padding: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.miniKey {
+  position: absolute;
+  background-color: rgba(255, 255, 255, 0.18);
+  border-radius: 1.5px;
+  transition: all 150ms ease;
+}
+
+.miniKeyActive {
+  background-color: var(--selection, #3cb371) !important;
+  box-shadow: 0 0 8px rgba(60, 179, 113, 0.8) !important;
+  z-index: 2;
+}
+
+.arrow {
+  font-size: 20px;
+  color: var(--key-color-base, #888);
+  opacity: 0.8;
+  margin: 0 16px;
+  user-select: none;
+}
+
+.previewKeycap {
+  position: relative;
+  width: 68px;
+  height: 56px;
+  background-color: var(--key-bg-base, #2a313c);
+  color: var(--key-color-base, #eee);
+  border-radius: 6px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.previewBehavior {
+  position: absolute;
+  top: 4px;
+  left: 6px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  opacity: 0.7;
+  letter-spacing: 0.5px;
+}
+
+.previewKeycode {
+  font-size: 16px;
+  font-weight: 700;
+  color: #ffffff;
+  padding-top: 6px;
+}
+
+.divider {
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.1);
+  margin-bottom: 20px;
+}
+
+.fieldRow {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+  gap: 12px;
+}
+
+.fieldLabel {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--fg, #ffffff);
+  min-width: 90px;
+}
+
+.editableSlot {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.06);
+  border-bottom: 1.5px dotted var(--key-color-base, #aaa);
+  transition: all 150ms ease;
+  user-select: none;
+}
+
+.editableSlot:hover,
+.editableSlotActive {
+  background-color: rgba(60, 179, 113, 0.18);
+  border-bottom-color: var(--selection, #3cb371);
+}
+
+.slotCode {
+  font-family: monospace;
+  font-weight: 700;
+  color: #ffffff;
+  font-size: 14px;
+}
+
+.slotDivider {
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 13px;
+}
+
+.slotDesc {
+  font-size: 14px;
+  color: var(--key-color-base, #bbb);
+}
+
+.parametersSection {
+  margin-top: 10px;
+  margin-bottom: 24px;
+}
+
+.sectionTitle {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--fg, #ffffff);
+  margin: 0 0 14px 0;
+}
+
+.paramRow {
+  display: flex;
+  align-items: center;
+  margin-left: 20px;
+  margin-bottom: 12px;
+  gap: 12px;
+}
+
+.paramLabel {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--key-color-base, #aaa);
+  min-width: 80px;
+}
+
+.actionsRow {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 10px;
+}
+
+.applyBtn {
+  cursor: pointer;
+  background-color: var(--selection, #3cb371);
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  border-radius: 5px;
+  padding: 7px 22px;
+  transition: background-color 150ms ease, transform 100ms ease;
+}
+
+.applyBtn:hover {
+  background-color: var(--hover-selection, #2ea043);
+}
+
+.applyBtn:active {
+  transform: scale(0.98);
+}
+
+.cancelBtn {
+  cursor: pointer;
+  background-color: rgba(255, 255, 255, 0.12);
+  color: var(--fg, #e6e6e6);
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  border-radius: 5px;
+  padding: 7px 20px;
+  transition: background-color 150ms ease;
+}
+
+.cancelBtn:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Side Picker Panel */
+.sidePanel {
+  width: 320px;
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+}
+
+.sidePanelHeader {
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.sidePanelTitle {
+  font-size: 14px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.sidePanelClose {
+  background: none;
+  border: none;
+  color: var(--key-color-base, #aaa);
+  cursor: pointer;
+  font-size: 16px;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.sidePanelClose:hover {
+  color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.sidePanelBody {
+  padding: 14px 16px;
+  overflow-y: auto;
+  flex: 1;
+}
