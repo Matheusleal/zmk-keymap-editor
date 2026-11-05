@@ -23,12 +23,13 @@ Princípios inegociáveis. Toda especificação, decisão arquitetural, tarefa e
 ## 4. Segurança e Conformidade
 - **Acesso ao GitHub**: Tokens pessoais de acesso (PAT) do GitHub ou OAuth devem permanecer estritamente em memória do navegador/local storage do cliente, nunca persistidos em logs de servidor.
 - **Sanitização de Entradas**: Nomes de nós, identificadores e labels gerados para Devicetree devem obedecer à regex de identificadores C/Devicetree (`^[a-zA-Z_][a-zA-Z0-9_]*$`) para prevenir injeção de código ou macros malformadas.
+- **Auditoria Obrigatória de Dependências**: É estritamente mandatório checar se há brechas de segurança (via `npm audit`, advisories do GitHub e bases CVE) antes de instalar ou atualizar qualquer pacote ou dependência. É proibido introduzir pacotes com vulnerabilidades ativas.
 
 ## 5. Processo e Governança (SDD)
 - **Spec-Driven**: Nenhuma implementação de código é permitida sem tarefa correspondente em estado `In Progress` no ledger (`docs/sdd/07-tasks.md`), rastreada a requisitos (GEARS) e decisões de design (DES).
 - **Delta Specs**: Novas mudanças após a baseline inicial passam pelo ciclo `docs/sdd/changes/` antes de consolidação.
 - **Zero PR Automatizado**: Trabalhar exclusivamente em feature branches locais até aprovação explícita do usuário.
-- **Dependências**: Qualquer adição de biblioteca npm externa deve ser comunicada e aprovada pelo usuário antes da instalação.
+- **Dependências e Segurança**: Qualquer adição de biblioteca npm externa deve ser pré-auditada contra vulnerabilidades e confirmada com autorização prévia e explícita do usuário antes da instalação.
 
 ## 6. Roteamento de Modelos
 - Documentação e Especificação: Flash / Flash Lite (SDD Specs, Memory, Tasks).

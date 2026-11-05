@@ -18,3 +18,10 @@ Impact: Nestes navegadores, o diálogo de abertura direta de pastas nativas não
 Recommendation: Manter o fallback automático para a API Node/Express local caso `window.showDirectoryPicker` seja indefinido.
 Status: PENDENTE DE DEFINIÇÃO
 
+VAL-003
+Severity: High
+Issue: Dependências upstream legadas (CRA / react-scripts / express 4.x / axios) possuem vulnerabilidades reportadas no npm audit.
+Impact: Riscos potenciais identificados em pacotes herdados do projeto original.
+Recommendation: Regra inegociável ativada: qualquer nova dependência ou atualização exige pré-auditoria de segurança (npm audit / CVE check) e aprovação explícita antes de instalar. Planejar ciclo de modernização de build (ex: Vite / dependências modernas) em Delta Spec dedicada.
+Status: REGISTRADO / DÍVIDA TÉCNICA UPSTREAM
+
