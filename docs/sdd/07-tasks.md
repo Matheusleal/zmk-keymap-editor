@@ -74,7 +74,7 @@ Related Requirements: FR-006, DES-002
 Done When: O usuário pode clicar em teclas no layout para selecioná-las como posições do combo, definir timeout e ação resultante, e salvar o combo.
 Recommended Agent: self
 Dependencies: TASK-005
-Status: Pending
+Status: Done
 
 TASK-007
 Title: Modelo de dados e serializador Devicetree para Macros

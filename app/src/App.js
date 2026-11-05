@@ -13,6 +13,7 @@ import Keyboard from './Keyboard/Keyboard'
 import GitHubLink from './GitHubLink'
 import Loader from './Common/Loader'
 import github from './Pickers/Github/api'
+import ComboManager from './Combos/ComboManager'
 
 function App() {
   const [definitions, setDefinitions] = useState(null)
@@ -22,6 +23,7 @@ function App() {
   const [keymap, setKeymap] = useState(null)
   const [editingKeymap, setEditingKeymap] = useState(null)
   const [saving, setSaving] = useState(false)
+  const [showCombos, setShowCombos] = useState(false)
 
   function handleCompile() {
     fetch(`${config.apiBaseUrl}/keymap`, {
@@ -92,6 +94,14 @@ function App() {
       <Loader load={initialize}>
         <KeyboardPicker onSelect={handleKeyboardSelected} />
         <div id="actions">
+          {keymap && (
+            <button
+              title="Manage ZMK Combos"
+              onClick={() => setShowCombos(true)}
+            >
+              Combos
+            </button>
+          )}
           {source === 'local' && (
             <button disabled={!editingKeymap} onClick={handleCompile}>
               Save Local
@@ -117,6 +127,13 @@ function App() {
             />
           )}
         </DefinitionsContext.Provider>
+        {showCombos && (
+          <ComboManager
+            keymap={editingKeymap || keymap}
+            onUpdate={handleUpdateKeymap}
+            onClose={() => setShowCombos(false)}
+          />
+        )}
       </Loader>
       <GitHubLink className="github-link" />
     </>
