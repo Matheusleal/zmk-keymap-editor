@@ -9,6 +9,9 @@ const uniq = require('lodash/uniq')
 
 const { renderTable } = require('./layout')
 const defaults = require('./defaults')
+const { DtsNode } = require('./dts/ast')
+const { parseDts } = require('./dts/parser')
+const { serializeDts } = require('./dts/serializer')
 
 class KeymapValidationError extends Error {
   constructor (errors) {
@@ -484,10 +487,171 @@ function validateKeymapJson(keymap) {
   }
 }
 
+function extractBindingsFromDtsText(bindingsText) {
+  const tokens = (bindingsText || '').trim().split(/\s+/).filter(Boolean);
+  const bindings = [];
+  let current = null;
+
+  for (const token of tokens) {
+    if (token.startsWith('&')) {
+      if (current) bindings.push(current.join(' '));
+      current = [token];
+    } else if (current) {
+      current.push(token);
+    }
+  }
+  if (current) bindings.push(current.join(' '));
+  return bindings;
+}
+
+function loadKeymapFromDts(dtsContent) {
+  const doc = parseDts(dtsContent);
+  const root = doc.rootNode;
+  if (!root) throw new Error('Invalid Devicetree: missing root node /');
+
+  const keymapNode = root.getChild('keymap');
+  const layers = [];
+  const layer_names = [];
+
+  if (keymapNode) {
+    for (const child of keymapNode.children) {
+      const name = child.label || child.name;
+      layer_names.push(name);
+      const bindingsProp = child.getProperty('bindings');
+      const bindingsVal = bindingsProp ? bindingsProp.value : '';
+      const layerBindings = extractBindingsFromDtsText(bindingsVal);
+      layers.push(layerBindings);
+    }
+  }
+
+  // Combos
+  const combos = [];
+  const combosNode = root.getChild('combos');
+  if (combosNode) {
+    for (const child of combosNode.children) {
+      const positionsStr = child.getProperty('key-positions')?.value || '';
+      const key_positions = positionsStr ? positionsStr.split(/\s+/).map(Number) : [];
+      const timeout_ms = parseInt(child.getProperty('timeout-ms')?.value, 10) || 50;
+      const bindings = child.getProperty('bindings')?.value || '&none';
+      const layersStr = child.getProperty('layers')?.value;
+      const layers = layersStr ? layersStr.split(/\s+/).map(Number) : undefined;
+      const slow_release = Boolean(child.getProperty('slow-release')?.value);
+
+      combos.push({
+        name: child.label || child.name,
+        key_positions,
+        bindings,
+        timeout_ms,
+        layers,
+        slow_release
+      });
+    }
+  }
+
+  // Macros
+  const macros = [];
+  const macrosNode = root.getChild('macros');
+  if (macrosNode) {
+    for (const child of macrosNode.children) {
+      const wait_ms = parseInt(child.getProperty('wait-ms')?.value, 10);
+      const tap_ms = parseInt(child.getProperty('tap-ms')?.value, 10);
+      const bindingsRaw = child.getProperty('bindings')?.raw || '';
+      const matches = [...bindingsRaw.matchAll(/<([^>]+)>/g)].map(m => m[1].trim());
+      macros.push({
+        name: child.label || child.name,
+        wait_ms: isNaN(wait_ms) ? 30 : wait_ms,
+        tap_ms: isNaN(tap_ms) ? 40 : tap_ms,
+        bindings: matches
+      });
+    }
+  }
+
+  // Conditional layers
+  const conditional_layers = [];
+  const condNode = root.getChild('conditional_layers');
+  if (condNode) {
+    for (const child of condNode.children) {
+      const ifStr = child.getProperty('if-layers')?.value || '';
+      const if_layers = ifStr.split(/\s+/).map(Number);
+      const then_layer = parseInt(child.getProperty('then-layer')?.value, 10);
+      conditional_layers.push({
+        name: child.label || child.name,
+        if_layers,
+        then_layer
+      });
+    }
+  }
+
+  // Custom behaviors
+  const custom_behaviors = [];
+  const behNode = root.getChild('behaviors');
+  if (behNode) {
+    for (const child of behNode.children) {
+      const name = child.name;
+      const code = child.label ? `&${child.label}` : `&${child.name}`;
+      const flavor = child.getProperty('flavor')?.value;
+      const tapping_term_ms = parseInt(child.getProperty('tapping-term-ms')?.value, 10);
+      const quick_tap_ms = parseInt(child.getProperty('quick-tap-ms')?.value, 10);
+      const require_prior_idle_ms = parseInt(child.getProperty('require-prior-idle-ms')?.value, 10);
+      const posStr = child.getProperty('hold-trigger-key-positions')?.value;
+      const hold_trigger_key_positions = posStr ? posStr.split(/\s+/).map(Number) : undefined;
+
+      custom_behaviors.push({
+        name,
+        code,
+        flavor,
+        tapping_term_ms,
+        quick_tap_ms,
+        require_prior_idle_ms,
+        hold_trigger_key_positions
+      });
+    }
+  }
+
+  return {
+    _dtsDoc: doc,
+    layer_names,
+    layers,
+    combos,
+    macros,
+    conditional_layers,
+    custom_behaviors
+  };
+}
+
+function updateKeymapDts(dtsContent, updatedKeymap) {
+  const doc = (updatedKeymap && updatedKeymap._dtsDoc) || parseDts(dtsContent);
+  const root = doc.rootNode;
+  if (!root) throw new Error('Invalid Devicetree: missing root node');
+
+  // Update keymap layers
+  const keymapNode = root.getChild('keymap');
+  if (keymapNode && Array.isArray(updatedKeymap.layers)) {
+    updatedKeymap.layers.forEach((layer, i) => {
+      const layerName = (updatedKeymap.layer_names && updatedKeymap.layer_names[i])
+        ? sanitizeDtsIdentifier(updatedKeymap.layer_names[i])
+        : (i === 0 ? 'default_layer' : `layer_${i}`);
+
+      let layerNode = keymapNode.children[i];
+      if (!layerNode) {
+        layerNode = new DtsNode(layerName);
+        keymapNode.addChild(layerNode);
+      }
+
+      const bindingsList = layer.map(b => typeof b === 'string' ? b : encodeKeyBinding(b)).join(' ');
+      layerNode.setProperty('bindings', bindingsList, `<${bindingsList}>`);
+    });
+  }
+
+  return serializeDts(doc);
+}
+
 module.exports = {
   KeymapValidationError,
   encodeKeymap,
   parseKeymap,
   generateKeymap,
-  validateKeymapJson
+  validateKeymapJson,
+  loadKeymapFromDts,
+  updateKeymapDts
 }

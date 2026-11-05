@@ -154,7 +154,7 @@ Related Requirements: FR-010, FR-011, DES-006
 Done When: As rotas existentes de leitura e gravação de keymap passam a utilizar o AST Engine com sucesso em todos os testes de integração.
 Recommended Agent: self
 Dependencies: TASK-012
-Status: Pending
+Status: Done
 
 TASK-014
 Title: Provedor Web File System Access API para Frontend

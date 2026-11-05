@@ -1,6 +1,6 @@
 # 11 — Project Memory (Memória Viva)
 
-Estado atual: Milestone 3 em andamento — TASK-012 Concluída.
+Estado atual: Milestone 3 em andamento — TASK-013 Concluída.
 Branch: `feature/planejamento-melhorias-zmk`
 Última Atualização: 2026-11-05
 
@@ -8,12 +8,12 @@ Branch: `feature/planejamento-melhorias-zmk`
 - Governança SDD ativa (00 a 10). Mapeadas 19 tarefas em 5 Milestones (M1 a M5).
 - Commits atômicos por task com testes verificados.
 - Milestones M1 e M2 concluídos.
-- `TASK-012`: Concluída com sucesso (Serializer de Devicetree AST com round-trip não-destrutivo em `api/services/zmk/dts/serializer.js` testado em `api/tests/dts-serializer.test.js`).
-- 35 testes unitários passando.
+- `TASK-013`: Concluída com sucesso (AST Engine conectado a `loadKeymapFromDts` e `updateKeymapDts` em `api/services/zmk/keymap.js`, validado em `api/tests/ast-integration.test.js`).
+- 38 testes passando.
 
 ## 2. Próximos Passos
-- Comitar `TASK-012`.
-- Iniciar `TASK-013` (Integração do novo AST Engine no serviço `api/services/zmk/keymap.js`).
+- Comitar `TASK-013`.
+- Iniciar `TASK-014` (Provedor Web File System Access API para Frontend).
 
 ## 3. Riscos e Alertas
-- Sem PR automático.
+- Sem PR automático. Fallback para Express mantido caso `showDirectoryPicker` seja indefinido.
