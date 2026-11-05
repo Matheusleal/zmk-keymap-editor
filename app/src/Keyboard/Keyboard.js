@@ -8,6 +8,7 @@ import { useContext, useMemo, useState } from 'react'
 
 import KeyboardLayout from './KeyboardLayout'
 import LayerSelector from './LayerSelector'
+import EncoderWidget from './EncoderWidget'
 import { getKeyBoundingBox } from '../key-units'
 import { DefinitionsContext, SearchContext } from '../providers'
 
@@ -154,6 +155,11 @@ function Keyboard(props) {
         onNewLayer={handleCreateLayer}
         onRenameLayer={handleRenameLayer}
         onDeleteLayer={handleDeleteLayer}
+      />
+      <EncoderWidget
+        activeLayer={activeLayer}
+        keymap={keymap}
+        onUpdate={onUpdate}
       />
       <SearchContext.Provider value={{ getSearchTargets, sources }}>
         <div style={getWrapperStyle()}>

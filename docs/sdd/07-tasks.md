@@ -194,7 +194,7 @@ Related Requirements: FR-013, DES-008
 Done When: O componente de layout renderiza os botões rotativos e o usuário consegue atribuir keycodes de incremento/decremento em cada camada.
 Recommended Agent: self
 Dependencies: TASK-015
-Status: Pending
+Status: Done
 
 TASK-017
 Title: Suporte a Comandos do Subsistema de Mouse Keys (CONFIG_ZMK_POINTING)
