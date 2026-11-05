@@ -55,7 +55,11 @@
 	color: var(--hover-selection) !important;
 }
 
-.code * {
+.params,
+.param,
+.code,
+.code *,
+.behaviour-binding {
 	pointer-events: none;
 }
 

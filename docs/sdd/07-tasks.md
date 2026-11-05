@@ -278,6 +278,17 @@ Recommended Agent: self
 Dependencies: TASK-022
 Status: Done
 
+TASK-024
+Title: Correção de clique no texto das teclas e centralização dos modais de Combos, Macros e Behaviors
+Goal: Corrigir a propagação de eventos no componente Key e KeyValue para que o clique em qualquer parte da tecla (incluindo sobre o texto e código) abra confiavelmente o popup de edição, e corrigir as propriedades de alinhamento CSS (justifyContent -> justify-content) nos modais de Combos, Macros, Conditional Layers e Custom Behaviors para que sejam renderizados no centro exato da tela.
+Inputs: app/src/Keyboard/Keys/Key.js, app/src/Keyboard/Keys/KeyValue.js, app/src/Keyboard/Keys/styles.module.css, app/src/Combos/styles.module.css, app/src/Macros/styles.module.css, app/src/ConditionalLayers/styles.module.css, app/src/CustomBehaviors/styles.module.css
+Related Requirements: NFR-004, DES-001
+Done When: Clicar diretamente no texto do keycode ou na tecla abre o popup de edição sem exceções; e os modais de Combos, Macros, Conditional Layers e Custom Behaviors aparecem perfeitamente centralizados na janela.
+Recommended Agent: self
+Dependencies: TASK-023
+Status: Done
+
+
 
 
 

@@ -39,7 +39,9 @@ function Key(props) {
   }
 
   const handleClick = (e) => {
-    e.stopPropagation()
+    if (e && typeof e.stopPropagation === 'function') {
+      e.stopPropagation()
+    }
     if (onClick) onClick(e)
   }
 
