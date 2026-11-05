@@ -10,7 +10,7 @@ Branch: `feature/planejamento-melhorias-zmk`
 - Todos os Gates (M1, M2, M3, M4, M5) validados e aprovados.
 - 54 testes unitários e de integração passando em `npm test`.
 - Build de produção React (`npm --prefix app run build`) 100% íntegro.
-- Nenhum PR aberto (regra inegociável).
+- Pull Request criado com autorização explícita: #1 em `Matheusleal/zmk-keymap-editor` (feature/planejamento-melhorias-zmk -> main).
 - **Regra de Segurança de Dependências**: Obrigatória checagem de vulnerabilidades (`npm audit`, GitHub Advisory, CVEs) antes de instalar ou atualizar pacotes, mantendo aprovação prévia do usuário.
 
 ## 2. Entregáveis do Projeto
